@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         body { font-family: 'Poppins', sans-serif; }
     </style>
@@ -78,8 +83,12 @@
                 </p>
             </div>
 
-            <!-- DYNAMIC PRICING CARDS CONTAINER -->
-            <div id="pricingContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch mb-16"></div>
+            <!-- DYNAMIC PRICING CARDS CONTAINER (FIRESTORE) -->
+            <div id="pricingContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch mb-16">
+                <div class="col-span-full text-center py-10 text-slate-500 text-sm">
+                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading packages from Cloud...
+                </div>
+            </div>
 
             <!-- FAQ / INFO BOX -->
             <div class="bg-slate-900/50 border border-slate-800 rounded-2xl sm:rounded-3xl p-6 sm:p-12 text-center max-w-4xl mx-auto">
@@ -106,7 +115,7 @@
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT (FIRESTORE REALTIME SYNC) -->
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -116,40 +125,29 @@
             icon.classList.toggle('fa-xmark');
         }
 
-        const defaultPricing = [
-            {
-                id: 1,
-                title: "Social Media Post",
-                price: "Rs. 1,500",
-                period: "per design",
-                desc: "High converting promotional designs for Facebook, Instagram & WhatsApp status.",
-                features: ["High Resolution PNG/JPG", "2 Revisions Included", "24-Hour Express Delivery"],
-                isPopular: false
-            },
-            {
-                id: 2,
-                title: "Typesetting (Exam Paper)",
-                price: "Rs. 2,500",
-                period: "starting price",
-                desc: "Science, Math & Language question papers with perfect equations, tables & Sinhala fonts.",
-                features: ["LaTeX Math/Science Equations", "Print-Ready PDF Included", "100% Accuracy Guarantee"],
-                isPopular: true
-            },
-            {
-                id: 3,
-                title: "AI Promo Video / Reel",
-                price: "Rs. 3,500",
-                period: "per 30-60s video",
-                desc: "Engaging vertical videos with AI presenter avatars and natural voiceovers.",
-                features: ["9:16 Vertical Video (TikTok/FB)", "Sinhala or English Voiceover", "Animated Subtitles"],
-                isPopular: false
-            }
-        ];
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmErsuDnnLI1RZau_BN60BPk_r_3oz5b8",
+            authDomain: "pg-creation.firebaseapp.com",
+            projectId: "pg-creation",
+            storageBucket: "pg-creation.firebasestorage.app",
+            messagingSenderId: "12899358109",
+            appId: "1:12899358109:web:3060461eb1b1f6976c8b74",
+            measurementId: "G-2SE99S1RQF"
+        };
 
-        function loadPricingCards() {
-            let pricing = localStorage.getItem('pg_pricing');
-            pricing = pricing ? JSON.parse(pricing) : defaultPricing;
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
+        db.collection("pricing").orderBy("createdAt", "asc").onSnapshot(snapshot => {
+            const pricingList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderPricingCards(pricingList);
+        }, error => {
+            console.error("Pricing Error:", error);
+            document.getElementById('pricingContainer').innerHTML = `<div class="col-span-full text-center text-slate-500 py-10 text-xs">Waiting for Cloud packages...</div>`;
+        });
+
+        function renderPricingCards(pricing) {
             const container = document.getElementById('pricingContainer');
             if (!container) return;
 
@@ -174,7 +172,7 @@
                         </div>
 
                         <ul class="space-y-2.5 mb-6 text-xs text-slate-300">
-                            ${p.features.filter(f => f).map(f => `
+                            ${(p.features || []).filter(f => f).map(f => `
                                 <li class="flex items-center gap-2.5">
                                     <i class="fa-solid fa-circle-check text-cyan-400 text-xs sm:text-sm flex-shrink-0"></i>
                                     <span>${f}</span>
@@ -191,8 +189,6 @@
                 `;
             }).join('');
         }
-
-        document.addEventListener("DOMContentLoaded", loadPricingCards);
     </script>
 </body>
 </html>
