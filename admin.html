@@ -194,13 +194,13 @@
         </div>
     </div>
 
-    <!-- MULTI-MEDIA GALLERY MANAGER MODAL (PHOTO, PDF & VIDEO) -->
+    <!-- MULTI-MEDIA GALLERY MANAGER (WITH VIDEO THUMBNAIL UPLOADER) -->
     <div id="galleryModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-8 relative">
             <button onclick="closeGalleryModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-white text-xl w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center transition">✕</button>
 
             <h3 id="modalServiceTitle" class="text-lg sm:text-2xl font-bold text-white mb-1 pr-10">Service Samples</h3>
-            <p class="text-slate-400 text-xs mb-5">Add Sample Photos, PDFs (Exam Papers) or Video links.</p>
+            <p class="text-slate-400 text-xs mb-5">Add Sample Photos, PDFs (Exam Papers) or Video showcases.</p>
 
             <!-- Media Type Selector -->
             <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl mb-5">
@@ -234,13 +234,17 @@
                     <span class="text-[11px] text-slate-500 block">Paste your Google Drive link ("Anyone with link can view").</span>
                 </div>
 
-                <!-- 3. Video Input -->
+                <!-- 3. Video Input (NOW WITH THUMBNAIL PHOTO UPLOAD!) -->
                 <div id="mediaBoxVideo" class="hidden space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <input type="url" id="galleryVideoUrl" placeholder="YouTube, Shorts or Video URL" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
-                        <input type="text" id="galleryVideoCaption" placeholder="Video Title (e.g. 30s AI Promo Ad)" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
+                        <input type="url" id="galleryVideoUrl" placeholder="Google Drive or YouTube Video URL" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
+                        <input type="text" id="galleryVideoCaption" placeholder="Video Title (e.g. AI Presenter Video Ad)" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
                     </div>
-                    <span class="text-[11px] text-slate-500 block">Paste YouTube, YouTube Shorts or Google Drive Video link.</span>
+                    <div>
+                        <label class="block text-[11px] font-medium text-purple-300 mb-1">Upload Video Thumbnail / Preview Photo (Optional but Recommended!):</label>
+                        <input type="file" id="galleryVideoThumbInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-purple-600 file:text-white bg-slate-900 border border-slate-800 rounded-lg p-1.5">
+                        <span class="text-[10px] text-slate-500 mt-0.5 block">Upload a screenshot of the video so it shows a beautiful cover photo before playing!</span>
+                    </div>
                 </div>
 
                 <button onclick="addGalleryMedia()" id="btnUploadGallery" class="w-full mt-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-lg text-xs sm:text-sm transition">
@@ -290,7 +294,6 @@
         }
         checkAuth();
 
-        // Image Compressor (Ultra-lightweight 30KB)
         function compressImageFile(file, maxWidth = 800, quality = 0.65) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -619,7 +622,7 @@
             }
         }
 
-        /* MULTI-MEDIA GALLERY MANAGER (PHOTO, PDF, VIDEO) */
+        /* MULTI-MEDIA GALLERY MANAGER */
         function setMediaType(type) {
             currentMediaType = type;
             document.getElementById('mediaBoxImage').classList.add('hidden');
@@ -678,7 +681,9 @@
 
                 return `
                 <div class="relative bg-slate-950 border border-slate-800 rounded-xl overflow-hidden group">
-                    ${isPdf ? `
+                    ${item.image ? `
+                        <img src="${item.image}" class="w-full h-24 sm:h-32 object-cover">
+                    ` : isPdf ? `
                         <div class="w-full h-24 sm:h-32 bg-rose-950/20 flex flex-col items-center justify-center text-rose-400 p-2 text-center">
                             <i class="fa-solid fa-file-pdf text-3xl mb-1"></i>
                             <span class="text-[9px] uppercase font-bold tracking-wider">PDF Document</span>
@@ -689,7 +694,7 @@
                             <span class="text-[9px] uppercase font-bold tracking-wider">Video Link</span>
                         </div>
                     ` : `
-                        <img src="${item.image}" class="w-full h-24 sm:h-32 object-cover">
+                        <div class="w-full h-24 sm:h-32 bg-slate-900 flex items-center justify-center text-slate-500">No Image</div>
                     `}
                     
                     <div class="p-2 bg-slate-950">
@@ -754,20 +759,31 @@
                 else if (currentMediaType === 'video') {
                     const url = document.getElementById('galleryVideoUrl').value.trim();
                     const caption = document.getElementById('galleryVideoCaption').value.trim() || "Video Showcase";
+                    const thumbInput = document.getElementById('galleryVideoThumbInput');
+                    
                     if (!url) {
                         alert("Please enter the Video URL!");
                         btn.disabled = false;
                         btn.innerText = "+ Add to Service Showcase";
                         return;
                     }
+
+                    let videoThumbnail = "";
+                    if (thumbInput.files && thumbInput.files[0]) {
+                        videoThumbnail = await compressImageFile(thumbInput.files[0], 750, 0.65);
+                    }
+
                     gallery.push({
                         id: Date.now(),
                         type: 'video',
                         url: url,
+                        image: videoThumbnail, // User uploaded thumbnail!
                         title: caption
                     });
+
                     document.getElementById('galleryVideoUrl').value = "";
                     document.getElementById('galleryVideoCaption').value = "";
+                    thumbInput.value = "";
                 }
 
                 await db.collection("services").doc(currentActiveServiceId).update({ gallery });
