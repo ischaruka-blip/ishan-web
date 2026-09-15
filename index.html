@@ -77,20 +77,16 @@
                 Transforming Your Ideas Into <br>
                 <span class="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">Creative Designs.</span>
             </h1>
-            <p class="text-sm sm:text-base md:text-lg text-slate-400 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
-                High-converting Social Media Designs, Publication-Grade Typesetting for Educational Papers & AI-Powered Video Advertisements.
+            <p class="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2 min-h-[85px] sm:min-h-[60px] flex items-center justify-center">
+                <span id="animatedFullSentence" class="text-slate-300 font-normal"></span>
+                <span class="inline-block w-0.5 h-5 bg-cyan-400 ml-1 animate-pulse flex-shrink-0"></span>
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto sm:max-w-none">
-                <a href="https://wa.me/94787187188?text=Hello%20PG%20Creation,%20I%20would%20like%20to%20get%20a%20quote." target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-semibold transition shadow-xl shadow-cyan-500/25 text-sm sm:text-base">
-                    <i class="fa-brands fa-whatsapp text-lg sm:text-xl"></i>
-                    <span>Get a Free Quote</span>
-                </a>
                 <a href="#services" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-semibold transition text-sm sm:text-base">
                     <span>Explore Services</span>
                     <i class="fa-solid fa-arrow-down text-xs"></i>
                 </a>
             </div>
-        </div>
     </section>
 
     <!-- SERVICES SECTION -->
@@ -110,24 +106,24 @@
         </div>
     </section>
 
-    <!-- WHY CHOOSE US -->
-    <section class="py-16 sm:py-20 px-4 sm:px-6">
-        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 text-center">
-            <div class="p-4 sm:p-6 rounded-2xl bg-slate-900/40 border border-slate-800">
-                <div class="text-2xl sm:text-3xl font-extrabold text-cyan-400 mb-1">100%</div>
-                <div class="text-[11px] sm:text-xs text-slate-400 font-medium">Accuracy Guaranteed</div>
+<!-- WHY CHOOSE US -->
+    <section class="py-14 sm:py-20 px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 text-center">
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/40 border border-slate-800 flex flex-col justify-center">
+                <div class="text-base sm:text-xl lg:text-2xl font-extrabold text-cyan-400 mb-1 tracking-tight truncate">100%</div>
+                <div class="text-[10px] sm:text-xs text-slate-400 font-medium leading-tight">Accuracy Guaranteed</div>
             </div>
-            <div class="p-4 sm:p-6 rounded-2xl bg-slate-900/40 border border-slate-800">
-                <div class="text-2xl sm:text-3xl font-extrabold text-blue-400 mb-1">24-48h</div>
-                <div class="text-[11px] sm:text-xs text-slate-400 font-medium">Fast Turnaround</div>
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/40 border border-slate-800 flex flex-col justify-center">
+                <div class="text-base sm:text-xl lg:text-2xl font-extrabold text-blue-400 mb-1 tracking-tight truncate">24-48h</div>
+                <div class="text-[10px] sm:text-xs text-slate-400 font-medium leading-tight">Fast Turnaround</div>
             </div>
-            <div class="p-4 sm:p-6 rounded-2xl bg-slate-900/40 border border-slate-800">
-                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mb-1">Affordable</div>
-                <div class="text-[11px] sm:text-xs text-slate-400 font-medium">Fair & Transparent Rates</div>
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/40 border border-slate-800 flex flex-col justify-center">
+                <div class="text-base sm:text-xl lg:text-2xl font-extrabold text-emerald-400 mb-1 tracking-tight truncate">Affordable</div>
+                <div class="text-[10px] sm:text-xs text-slate-400 font-medium leading-tight">Fair & Transparent Rates</div>
             </div>
-            <div class="p-4 sm:p-6 rounded-2xl bg-slate-900/40 border border-slate-800">
-                <div class="text-2xl sm:text-3xl font-extrabold text-purple-400 mb-1">Print-Ready</div>
-                <div class="text-[11px] sm:text-xs text-slate-400 font-medium">Flawless Typography</div>
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/40 border border-slate-800 flex flex-col justify-center">
+                <div class="text-base sm:text-xl lg:text-2xl font-extrabold text-purple-400 mb-1 tracking-tight truncate">Print-Ready</div>
+                <div class="text-[10px] sm:text-xs text-slate-400 font-medium leading-tight">Flawless Typography</div>
             </div>
         </div>
     </section>
@@ -371,6 +367,38 @@
                 if (e.key === 'ArrowLeft') prevImage();
             }
         });
+        // Full Sentence Typewriter Logic
+    const fullSentence = "High-converting Social Media Designs, Publication-Grade Typesetting for Educational Papers & AI-Powered Video Advertisements.";
+    let charIndex = 0;
+    let isDeleting = false;
+    const typingElement = document.getElementById("animatedFullSentence");
+
+    function typeFullSentence() {
+        if (!typingElement) return;
+
+        if (isDeleting) {
+            typingElement.innerText = fullSentence.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            typingElement.innerText = fullSentence.substring(0, charIndex + 1);
+            charIndex++;
+        }
+
+        // Typing speed: 35ms (smooth), Deleting speed: 18ms (fast)
+        let typeSpeed = isDeleting ? 18 : 35;
+
+        if (!isDeleting && charIndex === fullSentence.length) {
+            typeSpeed = 3500; // වාක්‍යය සම්පූර්ණ වුණාම කියවන්න තත්පර 3.5ක් නවතිනවා
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            typeSpeed = 800; // ආයේ මුල ඉඳන් පටන් ගන්න කලින් පොඩි Pause එකක්
+        }
+
+        setTimeout(typeFullSentence, typeSpeed);
+    }
+
+    document.addEventListener("DOMContentLoaded", typeFullSentence);
     </script>
 </body>
 </html>
