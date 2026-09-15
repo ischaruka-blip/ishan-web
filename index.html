@@ -44,14 +44,13 @@
                     <span>WhatsApp Us</span>
                 </a>
 
-                <!-- Mobile Hamburger Button -->
                 <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-lg focus:outline-none">
                     <i id="mobileMenuIcon" class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Dropdown Menu -->
+        <!-- Mobile Menu -->
         <div id="mobileMenu" class="hidden md:hidden bg-slate-950/95 border-b border-slate-800 px-6 py-5 space-y-4 text-sm font-medium">
             <a href="index.html#about" onclick="toggleMobileMenu()" class="block py-1 hover:text-cyan-400 transition">About</a>
             <a href="index.html#services" onclick="toggleMobileMenu()" class="block py-1 hover:text-cyan-400 transition">Services</a>
@@ -161,15 +160,16 @@
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- MULTI-MEDIA SHOWCASE MODAL -->
+    <!-- MULTI-MEDIA SHOWCASE MODAL (WITH VISUAL PREVIEWS) -->
     <div id="serviceGalleryModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-8 relative">
             <button onclick="closeServiceGallery()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-white text-xl w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-800 flex items-center justify-center transition">✕</button>
             
-            <h3 id="galleryModalTitle" class="text-xl sm:text-2xl font-bold text-white mb-1.5 pr-10">Service Samples</h3>
+            <h3 id="galleryModalTitle" class="text-xl sm:text-2xl font-bold text-white mb-1.5 pr-10">Service Showcase</h3>
             <p id="galleryModalDesc" class="text-slate-400 text-xs sm:text-sm mb-6">Explore our previous project samples, papers and video works.</p>
 
-            <div id="galleryModalContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4"></div>
+            <!-- Cards Grid (Uniform Height with Visual Thumbnails) -->
+            <div id="galleryModalContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
         </div>
     </div>
 
@@ -271,6 +271,20 @@
         let activeImageGalleryList = [];
         let currentPreviewIndex = 0;
 
+        // Auto Extract YouTube Info
+        function getYouTubeId(url) {
+            if (!url) return null;
+            let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+            return match ? match[1] : null;
+        }
+
+        // Auto Extract Google Drive ID
+        function getDriveId(url) {
+            if (!url) return null;
+            let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            return match ? match[1] : null;
+        }
+
         db.collection("services").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             cachedServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderWebsiteServices(cachedServices);
@@ -343,53 +357,89 @@
             } else {
                 container.innerHTML = allItems.map((item) => {
                     if (item.type === 'pdf') {
+                        // PDF Preview Card
+                        const driveId = getDriveId(item.url);
+                        const pdfThumbUrl = driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w600` : '';
+
                         return `
-                        <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 hover:border-rose-500/50 transition flex flex-col justify-between group">
-                            <div class="flex items-start gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl flex-shrink-0">
-                                    <i class="fa-solid fa-file-pdf"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
-                                    <span class="text-[10px] text-slate-400">PDF Document</span>
-                                </div>
+                        <div class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 hover:border-rose-500 transition flex flex-col justify-between group">
+                            <!-- Visual Preview Area -->
+                            <div class="relative h-44 bg-slate-900 overflow-hidden flex items-center justify-center">
+                                ${pdfThumbUrl ? `
+                                    <img src="${pdfThumbUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                ` : `
+                                    <div class="w-full h-full bg-gradient-to-br from-rose-950/40 to-slate-950 flex flex-col items-center justify-center text-rose-400 p-4">
+                                        <i class="fa-solid fa-file-pdf text-4xl mb-2"></i>
+                                        <span class="text-xs font-semibold text-slate-300">Document Preview</span>
+                                    </div>
+                                `}
+                                <span class="absolute top-2.5 left-2.5 bg-rose-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </span>
                             </div>
-                            <a href="${item.url}" target="_blank" class="w-full py-2 bg-slate-900 hover:bg-rose-500 hover:text-white text-rose-400 border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open / Download PDF
-                            </a>
+
+                            <div class="p-3 bg-slate-950">
+                                <h4 class="text-xs font-bold text-white truncate mb-2.5">${item.title}</h4>
+                                <a href="${item.url}" target="_blank" class="w-full py-2 bg-slate-900 hover:bg-rose-600 text-rose-300 hover:text-white border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open / Download PDF
+                                </a>
+                            </div>
                         </div>
                         `;
                     } else if (item.type === 'video') {
+                        // Video Visual Preview Card (Auto YouTube Thumbnail)
+                        const ytId = getYouTubeId(item.url);
+                        const ytThumb = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : '';
+
                         return `
-                        <div onclick="playVideo('${encodeURIComponent(item.url)}')" class="bg-slate-950 rounded-xl p-4 border border-slate-800 hover:border-purple-500/50 transition flex flex-col justify-between group cursor-pointer">
-                            <div class="flex items-start gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-110 transition">
-                                    <i class="fa-solid fa-circle-play"></i>
+                        <div onclick="playVideo('${encodeURIComponent(item.url)}')" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 hover:border-purple-500 transition flex flex-col justify-between group cursor-pointer">
+                            <!-- Visual Preview Area -->
+                            <div class="relative h-44 bg-slate-900 overflow-hidden flex items-center justify-center">
+                                ${ytThumb ? `
+                                    <img src="${ytThumb}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                ` : `
+                                    <div class="w-full h-full bg-gradient-to-br from-purple-950/40 to-slate-950 flex items-center justify-center">
+                                        <i class="fa-solid fa-video text-3xl text-purple-400"></i>
+                                    </div>
+                                `}
+                                <!-- Glowing Play Button Overlay -->
+                                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition flex items-center justify-center">
+                                    <span class="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center text-lg shadow-xl shadow-purple-600/40 group-hover:scale-110 transition">
+                                        <i class="fa-solid fa-play ml-1"></i>
+                                    </span>
                                 </div>
-                                <div class="min-w-0">
-                                    <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
-                                    <span class="text-[10px] text-purple-400">Watch Video Ad</span>
-                                </div>
+                                <span class="absolute top-2.5 left-2.5 bg-purple-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
+                                    <i class="fa-solid fa-play text-[8px]"></i> Video Ad
+                                </span>
                             </div>
-                            <div class="w-full py-2 bg-slate-900 group-hover:bg-purple-600 text-purple-300 group-hover:text-white border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
-                                <i class="fa-solid fa-play text-[10px]"></i> Play Video
+
+                            <div class="p-3 bg-slate-950">
+                                <h4 class="text-xs font-bold text-white truncate mb-2.5">${item.title}</h4>
+                                <div class="w-full py-2 bg-slate-900 group-hover:bg-purple-600 text-purple-300 group-hover:text-white border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                                    <i class="fa-solid fa-play text-[10px]"></i> Watch Video
+                                </div>
                             </div>
                         </div>
                         `;
                     } else {
-                        // Image
+                        // Image Visual Card
                         const imgIdx = activeImageGalleryList.findIndex(x => x.id === item.id);
                         return `
-                        <div onclick="openLightbox(${imgIdx})" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 hover:border-cyan-500 transition group cursor-pointer">
-                            <div class="relative overflow-hidden h-36 sm:h-44 bg-slate-900 flex items-center justify-center">
-                                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300">
+                        <div onclick="openLightbox(${imgIdx})" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 hover:border-cyan-500 transition group cursor-pointer flex flex-col justify-between">
+                            <div class="relative h-44 bg-slate-900 overflow-hidden flex items-center justify-center">
+                                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                 <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                    <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center text-xs sm:text-sm">
+                                    <span class="w-10 h-10 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center text-sm shadow-lg shadow-cyan-500/30">
                                         <i class="fa-solid fa-magnifying-glass-plus"></i>
                                     </span>
                                 </div>
+                                <span class="absolute top-2.5 left-2.5 bg-cyan-500/90 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
+                                    <i class="fa-solid fa-image"></i> Photo
+                                </span>
                             </div>
-                            <p class="p-2.5 text-[11px] sm:text-xs text-slate-300 font-medium truncate">${item.title || 'Sample Work'}</p>
+                            <div class="p-3 bg-slate-950">
+                                <p class="text-xs text-slate-300 font-medium truncate">${item.title || 'Sample Work'}</p>
+                            </div>
                         </div>
                         `;
                     }
@@ -437,16 +487,13 @@
             document.getElementById('imagePreviewModal').classList.add('hidden');
         }
 
-        // Video Player Logic
+        // Video Player
         function playVideo(encodedUrl) {
             let url = decodeURIComponent(encodedUrl);
             let embedUrl = url;
 
             if (url.includes("youtube.com") || url.includes("youtu.be")) {
-                let videoId = "";
-                if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
-                else if (url.includes("shorts/")) videoId = url.split("shorts/")[1].split("?")[0];
-                else if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
+                let videoId = getYouTubeId(url);
                 embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
             } else if (url.includes("drive.google.com/file/d/")) {
                 embedUrl = url.replace("/view", "/preview").split("?")[0];
