@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 sm:p-6 md:p-12">
@@ -15,8 +20,11 @@
         <!-- Header -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 sm:pb-8 border-b border-slate-800 mb-6 sm:mb-8 gap-4">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">PG Creation Admin</h1>
-                <p class="text-slate-400 text-xs sm:text-sm mt-1">Manage Services, Galleries & Pricing Packages</p>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">PG Creation Admin</h1>
+                    <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">● Firebase Live</span>
+                </div>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1">Manage Services, Galleries & Pricing in Real-Time</p>
             </div>
             <a href="index.html" target="_blank" class="w-full sm:w-auto text-center px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl text-xs sm:text-sm border border-slate-700 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> View Website
@@ -91,8 +99,8 @@
             <!-- Services List -->
             <div class="lg:col-span-2">
                 <h2 class="text-lg sm:text-xl font-bold mb-4 flex items-center justify-between">
-                    <span>Active Services</span>
-                    <span id="serviceCount" class="text-xs bg-slate-800 text-cyan-400 px-3 py-1 rounded-full">0 Services</span>
+                    <span>Active Services (Cloud)</span>
+                    <span id="serviceCount" class="text-xs bg-slate-800 text-cyan-400 px-3 py-1 rounded-full">Loading...</span>
                 </h2>
                 <div id="servicesList" class="space-y-4"></div>
             </div>
@@ -146,7 +154,7 @@
             <div class="lg:col-span-2">
                 <h2 class="text-lg sm:text-xl font-bold mb-4 flex items-center justify-between">
                     <span>Active Pricing Packages</span>
-                    <span id="pricingCount" class="text-xs bg-slate-800 text-emerald-400 px-3 py-1 rounded-full">0 Packages</span>
+                    <span id="pricingCount" class="text-xs bg-slate-800 text-emerald-400 px-3 py-1 rounded-full">Loading...</span>
                 </h2>
                 <div id="pricingList" class="space-y-4"></div>
             </div>
@@ -169,7 +177,7 @@
                     <input type="file" id="galleryPhotoInput" accept="image/*" class="text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-cyan-500 file:text-slate-950 bg-slate-900 border border-slate-800 rounded-lg p-1.5">
                     <input type="text" id="galleryPhotoCaption" placeholder="Photo Caption (e.g. Flyer Design)" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
                 </div>
-                <button onclick="addGalleryPhoto()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-lg text-xs sm:text-sm transition">
+                <button onclick="addGalleryPhoto()" id="btnUploadGallery" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-lg text-xs sm:text-sm transition">
                     + Upload & Add Photo to Gallery
                 </button>
             </div>
@@ -181,8 +189,24 @@
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT (FIREBASE INTEGRATED) -->
     <script>
+        // 1. Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmErsuDnnLI1RZau_BN60BPk_r_3oz5b8",
+            authDomain: "pg-creation.firebaseapp.com",
+            projectId: "pg-creation",
+            storageBucket: "pg-creation.firebasestorage.app",
+            messagingSenderId: "12899358109",
+            appId: "1:12899358109:web:3060461eb1b1f6976c8b74",
+            measurementId: "G-2SE99S1RQF"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let liveServices = [];
+        let livePricing = [];
         let uploadedImageBase64 = "";
         let currentActiveServiceId = null;
         let editingServiceId = null;
@@ -229,24 +253,25 @@
             }
         }
 
-        /* SERVICES LOGIC */
-        function getServices() {
-            const data = localStorage.getItem('pg_services');
-            return data ? JSON.parse(data) : [];
-        }
-        function saveServices(s) { localStorage.setItem('pg_services', JSON.stringify(s)); }
+        /* ---------------- SERVICES LOGIC (REALTIME FIRESTORE) ---------------- */
+        db.collection("services").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+            liveServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAdminServices();
+        }, error => {
+            console.error("Firebase Error:", error);
+            document.getElementById('servicesList').innerHTML = `<div class="p-4 bg-rose-950/50 border border-rose-800 text-rose-300 rounded-xl text-xs">Error connecting to Firestore. Make sure Firestore is created in 'Test Mode'.</div>`;
+        });
 
         function renderAdminServices() {
-            const services = getServices();
             const container = document.getElementById('servicesList');
-            document.getElementById('serviceCount').innerText = `${services.length} Services`;
+            document.getElementById('serviceCount').innerText = `${liveServices.length} Services`;
 
-            if(services.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs sm:text-sm">No services found.</div>`;
+            if(liveServices.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs sm:text-sm">No services found in Cloud. Add your first service!</div>`;
                 return;
             }
 
-            container.innerHTML = services.map(s => {
+            container.innerHTML = liveServices.map(s => {
                 const theme = colorStyles[s.color] || colorStyles.cyan;
                 const photoCount = s.gallery ? s.gallery.length : 0;
                 return `
@@ -262,19 +287,19 @@
                             </div>
                             <p class="text-slate-400 text-xs mt-1 leading-relaxed">${s.desc}</p>
                             <div class="flex flex-wrap gap-1.5 mt-3">
-                                ${s.features.filter(f => f).map(f => `<span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded text-slate-300 border border-slate-800">• ${f}</span>`).join('')}
+                                ${(s.features || []).filter(f => f).map(f => `<span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded text-slate-300 border border-slate-800">• ${f}</span>`).join('')}
                             </div>
                         </div>
                     </div>
                     
                     <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 border-slate-800 pt-3 sm:pt-0">
-                        <button onclick="openGalleryManager(${s.id})" class="px-2.5 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                        <button onclick="openGalleryManager('${s.id}')" class="px-2.5 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
                             <i class="fa-solid fa-images"></i> Photos (${photoCount})
                         </button>
-                        <button onclick="editService(${s.id})" class="text-cyan-400 hover:bg-cyan-500/10 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-800 flex items-center gap-1" title="Edit Service">
+                        <button onclick="editService('${s.id}')" class="text-cyan-400 hover:bg-cyan-500/10 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-800 flex items-center gap-1" title="Edit Service">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button onclick="deleteService(${s.id})" class="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition" title="Delete Service">
+                        <button onclick="deleteService('${s.id}')" class="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition" title="Delete Service">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -284,8 +309,7 @@
         }
 
         function editService(id) {
-            const services = getServices();
-            const service = services.find(s => s.id === id);
+            const service = liveServices.find(s => s.id === id);
             if (!service) return;
 
             editingServiceId = id;
@@ -304,7 +328,7 @@
             }
 
             document.getElementById('serviceFormHeading').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Service`;
-            document.getElementById('btnServiceSubmit').innerText = "Update & Save Changes";
+            document.getElementById('btnServiceSubmit').innerText = "Update Cloud Database";
             document.getElementById('btnCancelServiceEdit').classList.remove('hidden');
 
             renderAdminServices();
@@ -323,90 +347,73 @@
             renderAdminServices();
         }
 
-        function handleServiceSubmit(e) {
+        async function handleServiceSubmit(e) {
             e.preventDefault();
-            const services = getServices();
+            const btn = document.getElementById('btnServiceSubmit');
+            btn.disabled = true;
+            btn.innerText = "Saving to Cloud...";
 
-            if (editingServiceId) {
-                const index = services.findIndex(s => s.id === editingServiceId);
-                if (index !== -1) {
-                    services[index].title = document.getElementById('title').value;
-                    services[index].color = document.getElementById('color').value;
-                    services[index].desc = document.getElementById('desc').value;
-                    services[index].features = [
-                        document.getElementById('feature1').value,
-                        document.getElementById('feature2').value,
-                        document.getElementById('feature3').value
-                    ];
-                    if (uploadedImageBase64) {
-                        services[index].image = uploadedImageBase64;
+            const serviceData = {
+                title: document.getElementById('title').value,
+                color: document.getElementById('color').value,
+                desc: document.getElementById('desc').value,
+                features: [
+                    document.getElementById('feature1').value,
+                    document.getElementById('feature2').value,
+                    document.getElementById('feature3').value
+                ]
+            };
+
+            try {
+                if (editingServiceId) {
+                    if (uploadedImageBase64) serviceData.image = uploadedImageBase64;
+                    await db.collection("services").doc(editingServiceId).update(serviceData);
+                    alert("Service updated live in Cloud!");
+                    cancelServiceEdit();
+                } else {
+                    if (!uploadedImageBase64) {
+                        alert("Please select a cover/banner photo!");
+                        btn.disabled = false;
+                        btn.innerText = "Add Service Card";
+                        return;
                     }
-                    saveServices(services);
-                    alert("Service successfully updated!");
+                    serviceData.image = uploadedImageBase64;
+                    serviceData.gallery = [];
+                    serviceData.createdAt = Date.now();
+                    await db.collection("services").add(serviceData);
+                    alert("Service successfully published live!");
                     cancelServiceEdit();
                 }
-            } else {
-                if (!uploadedImageBase64) {
-                    alert("Please select a cover/banner photo!");
-                    return;
-                }
-                const newService = {
-                    id: Date.now(),
-                    title: document.getElementById('title').value,
-                    image: uploadedImageBase64,
-                    color: document.getElementById('color').value,
-                    desc: document.getElementById('desc').value,
-                    features: [
-                        document.getElementById('feature1').value,
-                        document.getElementById('feature2').value,
-                        document.getElementById('feature3').value
-                    ],
-                    gallery: []
-                };
-                services.push(newService);
-                saveServices(services);
-                cancelServiceEdit();
-                alert("Service successfully added!");
+            } catch (err) {
+                alert("Error saving: " + err.message);
+            } finally {
+                btn.disabled = false;
             }
         }
 
-        function deleteService(id) {
-            if(confirm("Are you sure you want to delete this service?")) {
-                let services = getServices().filter(s => s.id !== id);
-                saveServices(services);
+        async function deleteService(id) {
+            if(confirm("Delete this service permanently from Cloud?")) {
+                await db.collection("services").doc(id).delete();
                 if (editingServiceId === id) cancelServiceEdit();
-                renderAdminServices();
             }
         }
 
-        /* PRICING LOGIC */
-        const defaultPricing = [
-            { id: 1, title: "Social Media Post", price: "Rs. 1,500", period: "per design", desc: "Promo designs for Facebook & Instagram", features: ["High Resolution PNG", "2 Revisions"], isPopular: false },
-            { id: 2, title: "Typesetting (Exam Paper)", price: "Rs. 2,500", period: "starting price", desc: "Science & Math papers with equations", features: ["LaTeX Equations", "Print-Ready PDF"], isPopular: true },
-            { id: 3, title: "AI Promo Video / Reel", price: "Rs. 3,500", period: "per 30-60s video", desc: "Vertical videos with voiceovers", features: ["9:16 Vertical Video", "Sinhala Voiceover"], isPopular: false }
-        ];
-
-        function getPricing() {
-            const data = localStorage.getItem('pg_pricing');
-            if(!data) {
-                localStorage.setItem('pg_pricing', JSON.stringify(defaultPricing));
-                return defaultPricing;
-            }
-            return JSON.parse(data);
-        }
-        function savePricing(p) { localStorage.setItem('pg_pricing', JSON.stringify(p)); }
+        /* ---------------- PRICING LOGIC (REALTIME FIRESTORE) ---------------- */
+        db.collection("pricing").orderBy("createdAt", "asc").onSnapshot(snapshot => {
+            livePricing = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAdminPricing();
+        });
 
         function renderAdminPricing() {
-            const list = getPricing();
             const container = document.getElementById('pricingList');
-            document.getElementById('pricingCount').innerText = `${list.length} Packages`;
+            document.getElementById('pricingCount').innerText = `${livePricing.length} Packages`;
 
-            if(list.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs sm:text-sm">No packages found.</div>`;
+            if(livePricing.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs sm:text-sm">No packages found in Cloud. Add your first pricing package!</div>`;
                 return;
             }
 
-            container.innerHTML = list.map(p => `
+            container.innerHTML = livePricing.map(p => `
                 <div class="bg-slate-900 border ${editingPricingId === p.id ? 'border-emerald-400 ring-2 ring-emerald-500/20' : (p.isPopular ? 'border-cyan-500/50' : 'border-slate-800')} p-4 sm:p-5 rounded-xl flex items-start justify-between gap-4 transition">
                     <div>
                         <div class="flex items-center gap-2">
@@ -416,14 +423,14 @@
                         <div class="text-emerald-400 font-extrabold text-base sm:text-lg mt-1">${p.price} <span class="text-xs text-slate-400 font-normal">${p.period || ''}</span></div>
                         <p class="text-slate-400 text-xs mt-1">${p.desc}</p>
                         <div class="flex flex-wrap gap-1.5 mt-2.5">
-                            ${p.features.filter(f=>f).map(f => `<span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded text-slate-300 border border-slate-800">• ${f}</span>`).join('')}
+                            ${(p.features || []).filter(f=>f).map(f => `<span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded text-slate-300 border border-slate-800">• ${f}</span>`).join('')}
                         </div>
                     </div>
                     <div class="flex items-center gap-1">
-                        <button onclick="editPricing(${p.id})" class="text-emerald-400 hover:bg-emerald-500/10 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-800 flex items-center gap-1" title="Edit Pricing">
+                        <button onclick="editPricing('${p.id}')" class="text-emerald-400 hover:bg-emerald-500/10 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-800 flex items-center gap-1" title="Edit Pricing">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button onclick="deletePricing(${p.id})" class="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition" title="Delete">
+                        <button onclick="deletePricing('${p.id}')" class="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition" title="Delete">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -432,8 +439,7 @@
         }
 
         function editPricing(id) {
-            const list = getPricing();
-            const item = list.find(p => p.id === id);
+            const item = livePricing.find(p => p.id === id);
             if (!item) return;
 
             editingPricingId = id;
@@ -447,7 +453,7 @@
             document.getElementById('pricePopular').checked = !!item.isPopular;
 
             document.getElementById('pricingFormHeading').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Package`;
-            document.getElementById('btnPricingSubmit').innerText = "Update & Save Package";
+            document.getElementById('btnPricingSubmit').innerText = "Update Cloud Package";
             document.getElementById('btnCancelPricingEdit').classList.remove('hidden');
 
             renderAdminPricing();
@@ -463,62 +469,54 @@
             renderAdminPricing();
         }
 
-        function handlePricingSubmit(e) {
+        async function handlePricingSubmit(e) {
             e.preventDefault();
-            const list = getPricing();
+            const btn = document.getElementById('btnPricingSubmit');
+            btn.disabled = true;
+            btn.innerText = "Saving to Cloud...";
 
-            if (editingPricingId) {
-                const index = list.findIndex(p => p.id === editingPricingId);
-                if (index !== -1) {
-                    list[index].title = document.getElementById('priceTitle').value;
-                    list[index].price = document.getElementById('priceValue').value;
-                    list[index].period = document.getElementById('pricePeriod').value;
-                    list[index].desc = document.getElementById('priceDesc').value;
-                    list[index].features = [
-                        document.getElementById('pfeature1').value,
-                        document.getElementById('pfeature2').value,
-                        document.getElementById('pfeature3').value
-                    ];
-                    list[index].isPopular = document.getElementById('pricePopular').checked;
+            const pricingData = {
+                title: document.getElementById('priceTitle').value,
+                price: document.getElementById('priceValue').value,
+                period: document.getElementById('pricePeriod').value,
+                desc: document.getElementById('priceDesc').value,
+                features: [
+                    document.getElementById('pfeature1').value,
+                    document.getElementById('pfeature2').value,
+                    document.getElementById('pfeature3').value
+                ],
+                isPopular: document.getElementById('pricePopular').checked
+            };
 
-                    savePricing(list);
-                    alert("Pricing package successfully updated!");
+            try {
+                if (editingPricingId) {
+                    await db.collection("pricing").doc(editingPricingId).update(pricingData);
+                    alert("Pricing package updated live in Cloud!");
+                    cancelPricingEdit();
+                } else {
+                    pricingData.createdAt = Date.now();
+                    await db.collection("pricing").add(pricingData);
+                    alert("Pricing package published live!");
                     cancelPricingEdit();
                 }
-            } else {
-                list.push({
-                    id: Date.now(),
-                    title: document.getElementById('priceTitle').value,
-                    price: document.getElementById('priceValue').value,
-                    period: document.getElementById('pricePeriod').value,
-                    desc: document.getElementById('priceDesc').value,
-                    features: [
-                        document.getElementById('pfeature1').value,
-                        document.getElementById('pfeature2').value,
-                        document.getElementById('pfeature3').value
-                    ],
-                    isPopular: document.getElementById('pricePopular').checked
-                });
-                savePricing(list);
-                cancelPricingEdit();
-                alert("Pricing package successfully added!");
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btn.disabled = false;
             }
         }
 
-        function deletePricing(id) {
-            if(confirm("Delete this pricing package?")) {
-                let list = getPricing().filter(p => p.id !== id);
-                savePricing(list);
+        async function deletePricing(id) {
+            if(confirm("Delete this package permanently from Cloud?")) {
+                await db.collection("pricing").doc(id).delete();
                 if (editingPricingId === id) cancelPricingEdit();
-                renderAdminPricing();
             }
         }
 
-        /* GALLERY MANAGER */
+        /* ---------------- GALLERY MANAGER ---------------- */
         function openGalleryManager(serviceId) {
             currentActiveServiceId = serviceId;
-            const services = getServices();
-            const service = services.find(s => s.id === serviceId);
+            const service = liveServices.find(s => s.id === serviceId);
             if (!service) return;
 
             document.getElementById('modalServiceTitle').innerText = `${service.title} - Gallery`;
@@ -529,7 +527,6 @@
         function closeGalleryModal() {
             document.getElementById('galleryModal').classList.add('hidden');
             currentActiveServiceId = null;
-            renderAdminServices();
         }
 
         function renderGalleryGrid(service) {
@@ -558,47 +555,53 @@
         function addGalleryPhoto() {
             const fileInput = document.getElementById('galleryPhotoInput');
             const captionInput = document.getElementById('galleryPhotoCaption');
+            const btn = document.getElementById('btnUploadGallery');
 
             if (!fileInput.files || !fileInput.files[0]) {
                 alert("Please choose a photo to upload!");
                 return;
             }
 
+            btn.disabled = true;
+            btn.innerText = "Uploading to Cloud...";
+
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const photoData = e.target.result;
-                const services = getServices();
-                const service = services.find(s => s.id === currentActiveServiceId);
+                const service = liveServices.find(s => s.id === currentActiveServiceId);
                 
                 if (!service) return;
-                if (!service.gallery) service.gallery = [];
+                const gallery = service.gallery || [];
 
-                service.gallery.push({
+                gallery.push({
                     id: Date.now(),
                     image: photoData,
                     title: captionInput.value.trim() || "Sample Design"
                 });
 
-                saveServices(services);
-                fileInput.value = "";
-                captionInput.value = "";
-                renderGalleryGrid(service);
+                try {
+                    await db.collection("services").doc(currentActiveServiceId).update({ gallery });
+                    fileInput.value = "";
+                    captionInput.value = "";
+                    renderGalleryGrid({ ...service, gallery });
+                } catch(err) {
+                    alert("Error: " + err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = "+ Upload & Add Photo to Gallery";
+                }
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
-        function deleteGalleryPhoto(photoId) {
-            const services = getServices();
-            const service = services.find(s => s.id === currentActiveServiceId);
+        async function deleteGalleryPhoto(photoId) {
+            const service = liveServices.find(s => s.id === currentActiveServiceId);
             if (!service) return;
 
-            service.gallery = (service.gallery || []).filter(p => p.id !== photoId);
-            saveServices(services);
-            renderGalleryGrid(service);
+            const gallery = (service.gallery || []).filter(p => p.id !== photoId);
+            await db.collection("services").doc(currentActiveServiceId).update({ gallery });
+            renderGalleryGrid({ ...service, gallery });
         }
-
-        renderAdminServices();
-        renderAdminPricing();
     </script>
 </body>
 </html>
