@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         body { font-family: 'Poppins', sans-serif; }
     </style>
@@ -96,8 +101,12 @@
                 <p class="text-slate-400 text-xs sm:text-sm">Professional solutions tailored to help tuition institutes, teachers, and small businesses stand out.</p>
             </div>
             
-            <!-- Dynamic Services Cards Grid -->
-            <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
+            <!-- Dynamic Services Cards Grid (Firestore Connected) -->
+            <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div class="col-span-full text-center py-10 text-slate-500 text-sm">
+                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading services from Cloud...
+                </div>
+            </div>
         </div>
     </section>
 
@@ -185,7 +194,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT (FIRESTORE REALTIME SYNC) -->
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -194,6 +203,20 @@
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-xmark');
         }
+
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmErsuDnnLI1RZau_BN60BPk_r_3oz5b8",
+            authDomain: "pg-creation.firebaseapp.com",
+            projectId: "pg-creation",
+            storageBucket: "pg-creation.firebasestorage.app",
+            messagingSenderId: "12899358109",
+            appId: "1:12899358109:web:3060461eb1b1f6976c8b74",
+            measurementId: "G-2SE99S1RQF"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         const colorStyles = {
             cyan: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "hover:border-cyan-500", dot: "text-cyan-400" },
@@ -206,16 +229,25 @@
             teal: { text: "text-teal-400", bg: "bg-teal-500/10", border: "hover:border-teal-500", dot: "text-teal-400" }
         };
 
+        let cachedServices = [];
         let activeGalleryList = [];
         let currentPreviewIndex = 0;
 
-        function loadWebsiteServices() {
-            const services = JSON.parse(localStorage.getItem('pg_services') || "[]");
+        // REAL-TIME FIRESTORE LISTENER
+        db.collection("services").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+            cachedServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderWebsiteServices(cachedServices);
+        }, error => {
+            console.error("Firestore Error:", error);
+            document.getElementById('servicesContainer').innerHTML = `<div class="col-span-full text-center text-slate-500 py-10 text-xs">Waiting for Cloud services...</div>`;
+        });
+
+        function renderWebsiteServices(services) {
             const container = document.getElementById('servicesContainer');
             if (!container) return;
 
             if (services.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center text-slate-500 py-10 text-sm">No services added yet. Please add them from the Admin Panel.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center text-slate-500 py-12 text-sm">No services published yet. Please add them from the Admin Panel.</div>`;
                 return;
             }
 
@@ -224,7 +256,7 @@
                 const photoCount = s.gallery ? s.gallery.length : 0;
                 
                 return `
-                <div onclick="openServiceGallery(${s.id})" class="bg-slate-950/80 border border-slate-800 p-5 sm:p-6 rounded-2xl sm:rounded-3xl ${theme.border} transition group hover:-translate-y-1 duration-300 cursor-pointer relative flex flex-col justify-between overflow-hidden">
+                <div onclick="openServiceGallery('${s.id}')" class="bg-slate-950/80 border border-slate-800 p-5 sm:p-6 rounded-2xl sm:rounded-3xl ${theme.border} transition group hover:-translate-y-1 duration-300 cursor-pointer relative flex flex-col justify-between overflow-hidden">
                     <div>
                         <!-- LARGE BANNER COVER -->
                         <div class="w-full h-40 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-5 bg-slate-900 border border-slate-800 flex items-center justify-center relative group-hover:border-slate-700 transition">
@@ -243,7 +275,7 @@
                         <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mb-5">${s.desc}</p>
                         
                         <ul class="text-xs text-slate-400 space-y-2 mb-6">
-                            ${s.features.filter(f => f).map(f => `
+                            ${(s.features || []).filter(f => f).map(f => `
                                 <li class="flex items-center">
                                     <i class="fa-solid fa-check ${theme.dot} mr-2 flex-shrink-0"></i>
                                     <span>${f}</span>
@@ -262,8 +294,7 @@
         }
 
         function openServiceGallery(serviceId) {
-            const services = JSON.parse(localStorage.getItem('pg_services') || "[]");
-            const service = services.find(s => s.id === serviceId);
+            const service = cachedServices.find(s => s.id === serviceId);
             if (!service) return;
 
             document.getElementById('galleryModalTitle').innerText = `${service.title} Samples`;
@@ -340,8 +371,6 @@
                 if (e.key === 'ArrowLeft') prevImage();
             }
         });
-
-        document.addEventListener("DOMContentLoaded", loadWebsiteServices);
     </script>
 </body>
 </html>
