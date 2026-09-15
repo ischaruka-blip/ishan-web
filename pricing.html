@@ -17,54 +17,77 @@
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-white min-h-screen flex flex-col justify-between">
 
     <!-- NAVIGATION BAR -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3">
-    <img src="logo.jpeg" alt="PG Creation" class="w-11 h-11 rounded-full object-cover shadow-lg shadow-cyan-500/20 border border-slate-700">
-    <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">PG Creation</span>
-</a>
+                <img src="logo.jpeg" alt="PG Creation" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover shadow-lg shadow-cyan-500/20 border border-slate-700">
+                <span class="text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">PG Creation</span>
+            </a>
+
+            <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
                 <a href="index.html#about" class="hover:text-cyan-400 transition">About</a>
                 <a href="index.html#services" class="hover:text-cyan-400 transition">Services</a>
                 <a href="pricing.html" class="text-cyan-400 font-semibold transition">Pricing</a>
                 <a href="index.html#contact" class="hover:text-cyan-400 transition">Contact</a>
             </div>
-            <a href="https://wa.me/94787187188" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-full font-medium text-sm transition shadow-lg shadow-emerald-500/20">
-                <i class="fa-brands fa-whatsapp text-lg"></i>
-                <span>WhatsApp Us</span>
-            </a>
+
+            <!-- Right Actions -->
+            <div class="flex items-center gap-3">
+                <a href="https://wa.me/94787187188" target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-full font-medium text-sm transition shadow-lg shadow-emerald-500/20">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>WhatsApp Us</span>
+                </a>
+
+                <!-- Mobile Hamburger Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-lg focus:outline-none">
+                    <i id="mobileMenuIcon" class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-950/95 border-b border-slate-800 px-6 py-5 space-y-4 text-sm font-medium">
+            <a href="index.html#about" class="block py-1 hover:text-cyan-400 transition">About</a>
+            <a href="index.html#services" class="block py-1 hover:text-cyan-400 transition">Services</a>
+            <a href="pricing.html" class="block py-1 text-cyan-400 font-semibold transition">Pricing</a>
+            <a href="index.html#contact" class="block py-1 hover:text-cyan-400 transition">Contact</a>
+            <div class="pt-3 border-t border-slate-800">
+                <a href="https://wa.me/94787187188" target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-medium text-sm transition">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>WhatsApp Us</span>
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- HEADER / HERO SECTION -->
-    <main class="flex-grow pt-36 pb-20 px-6">
+    <main class="flex-grow pt-32 pb-16 sm:pt-40 sm:pb-24 px-4 sm:px-6">
         <div class="max-w-6xl mx-auto">
             
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-4">
+            <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-4">
                     <i class="fa-solid fa-tags"></i> Affordable & Transparent Pricing
                 </div>
-                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
                     Simple, Fair Pricing for <br>
                     <span class="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">Exceptional Quality.</span>
                 </h1>
-                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-                    No hidden fees. Pick the package that best fits your educational institution or brand, and start collaborating with us today.
+                <p class="text-slate-400 text-xs sm:text-base leading-relaxed max-w-xl mx-auto">
+                    No hidden fees. Pick the package that best fits your requirements and start collaborating with us today.
                 </p>
             </div>
 
             <!-- DYNAMIC PRICING CARDS CONTAINER -->
-            <div id="pricingContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch mb-20">
-                <!-- Pricing Cards will load here dynamically from Admin Panel -->
-            </div>
+            <div id="pricingContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch mb-16"></div>
 
             <!-- FAQ / INFO BOX -->
-            <div class="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 sm:p-12 text-center max-w-4xl mx-auto">
-                <h3 class="text-xl sm:text-2xl font-bold mb-3">Need a Custom Quote or Bulk Discount?</h3>
-                <p class="text-slate-400 text-sm mb-6 max-w-xl mx-auto">
+            <div class="bg-slate-900/50 border border-slate-800 rounded-2xl sm:rounded-3xl p-6 sm:p-12 text-center max-w-4xl mx-auto">
+                <h3 class="text-lg sm:text-2xl font-bold mb-2 sm:mb-3">Need a Custom Quote or Bulk Discount?</h3>
+                <p class="text-slate-400 text-xs sm:text-sm mb-6 max-w-xl mx-auto">
                     Have monthly bulk exam papers, complete term test series, or continuous social media design requirements? Talk to us directly for tailored package rates.
                 </p>
-                <a href="https://wa.me/94787187188?text=Hello%20PG%20Creation,%20I%20need%20a%20custom%20quotation%20for%20a%20project." target="_blank" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 px-6 py-3 rounded-xl text-sm font-semibold transition">
+                <a href="https://wa.me/94787187188?text=Hello%20PG%20Creation,%20I%20need%20a%20custom%20quotation%20for%20a%20project." target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 px-6 py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition">
                     <i class="fa-brands fa-whatsapp text-lg text-emerald-400"></i>
                     <span>Contact For Custom Packages</span>
                 </a>
@@ -74,17 +97,25 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="py-10 border-t border-slate-900 text-center text-xs text-slate-500">
+    <footer class="py-8 sm:py-10 border-t border-slate-900 text-center text-[11px] sm:text-xs text-slate-500 px-4">
         <p>&copy; 2026 PG Creation. All Rights Reserved. Transforming ideas into creative designs.</p>
     </footer>
 
     <!-- FLOATING WHATSAPP BUTTON -->
-    <a href="https://wa.me/94787187188" target="_blank" class="fixed bottom-6 right-6 z-50 bg-emerald-500 hover:bg-emerald-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-2xl shadow-emerald-500/50 hover:scale-110 transition duration-300">
+    <a href="https://wa.me/94787187188" target="_blank" class="fixed bottom-5 right-5 z-50 bg-emerald-500 hover:bg-emerald-600 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-xl sm:text-2xl shadow-2xl shadow-emerald-500/50 hover:scale-110 transition duration-300">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- SCRIPT TO LOAD DYNAMIC PRICING -->
+    <!-- SCRIPT -->
     <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            menu.classList.toggle('hidden');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        }
+
         const defaultPricing = [
             {
                 id: 1,
@@ -123,36 +154,36 @@
             if (!container) return;
 
             if (pricing.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-16 text-slate-500">No pricing packages available at the moment.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-16 text-slate-500 text-sm">No pricing packages available at the moment.</div>`;
                 return;
             }
 
             container.innerHTML = pricing.map(p => {
                 const waMsg = encodeURIComponent(`Hello PG Creation, I am interested in your "${p.title}" package priced at ${p.price}.`);
                 return `
-                <div class="relative bg-slate-900/60 border ${p.isPopular ? 'border-cyan-500 shadow-xl shadow-cyan-500/10' : 'border-slate-800'} rounded-3xl p-8 flex flex-col justify-between hover:-translate-y-1 transition duration-300">
-                    ${p.isPopular ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-extrabold text-[11px] uppercase tracking-wider px-4 py-1 rounded-full shadow-lg">Most Popular</span>` : ''}
+                <div class="relative bg-slate-900/60 border ${p.isPopular ? 'border-cyan-500 shadow-xl shadow-cyan-500/10' : 'border-slate-800'} rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col justify-between hover:-translate-y-1 transition duration-300">
+                    ${p.isPopular ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider px-3.5 py-1 rounded-full shadow-lg">Most Popular</span>` : ''}
                     
                     <div>
-                        <h3 class="text-xl font-bold text-white mb-2">${p.title}</h3>
-                        <p class="text-slate-400 text-xs mb-6 min-h-[36px]">${p.desc}</p>
+                        <h3 class="text-lg sm:text-xl font-bold text-white mb-2">${p.title}</h3>
+                        <p class="text-slate-400 text-xs mb-5 sm:min-h-[36px]">${p.desc}</p>
                         
-                        <div class="flex items-baseline gap-2 mb-6 pb-6 border-b border-slate-800">
-                            <span class="text-3xl sm:text-4xl font-extrabold text-white">${p.price}</span>
-                            ${p.period ? `<span class="text-xs text-slate-400 font-medium">${p.period}</span>` : ''}
+                        <div class="flex items-baseline gap-2 mb-5 pb-5 border-b border-slate-800">
+                            <span class="text-2xl sm:text-4xl font-extrabold text-white">${p.price}</span>
+                            ${p.period ? `<span class="text-[11px] sm:text-xs text-slate-400 font-medium">${p.period}</span>` : ''}
                         </div>
 
-                        <ul class="space-y-3 mb-8 text-xs text-slate-300">
+                        <ul class="space-y-2.5 mb-6 text-xs text-slate-300">
                             ${p.features.filter(f => f).map(f => `
                                 <li class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-circle-check text-cyan-400 text-sm"></i>
+                                    <i class="fa-solid fa-circle-check text-cyan-400 text-xs sm:text-sm flex-shrink-0"></i>
                                     <span>${f}</span>
                                 </li>
                             `).join('')}
                         </ul>
                     </div>
 
-                    <a href="https://wa.me/94787187188?text=${waMsg}" target="_blank" class="w-full py-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition ${p.isPopular ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/25' : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'}">
+                    <a href="https://wa.me/94787187188?text=${waMsg}" target="_blank" class="w-full py-3 sm:py-3.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition ${p.isPopular ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/25' : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'}">
                         <i class="fa-brands fa-whatsapp text-base"></i>
                         <span>Order This Package</span>
                     </a>
