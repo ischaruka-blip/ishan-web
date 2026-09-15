@@ -77,16 +77,23 @@
                 Transforming Your Ideas Into <br>
                 <span class="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">Creative Designs.</span>
             </h1>
+            
+            <!-- ANIMATED TYPEWRITER SUBTITLE -->
             <p class="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2 min-h-[85px] sm:min-h-[60px] flex items-center justify-center">
                 <span id="animatedFullSentence" class="text-slate-300 font-normal"></span>
                 <span class="inline-block w-0.5 h-5 bg-cyan-400 ml-1 animate-pulse flex-shrink-0"></span>
             </p>
+
             <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto sm:max-w-none">
+                <a href="https://wa.me/94787187188?text=Hello%20PG%20Creation,%20I%20would%20like%20to%20get%20a%20quote." target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-semibold transition shadow-xl shadow-cyan-500/25 text-sm sm:text-base">
+                    <span>Get a Free Quote</span>
+                </a>
                 <a href="#services" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-semibold transition text-sm sm:text-base">
                     <span>Explore Services</span>
                     <i class="fa-solid fa-arrow-down text-xs"></i>
                 </a>
             </div>
+        </div>
     </section>
 
     <!-- SERVICES SECTION -->
@@ -97,7 +104,6 @@
                 <p class="text-slate-400 text-xs sm:text-sm">Professional solutions tailored to help tuition institutes, teachers, and small businesses stand out.</p>
             </div>
             
-            <!-- Dynamic Services Cards Grid (Firestore Connected) -->
             <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div class="col-span-full text-center py-10 text-slate-500 text-sm">
                     <i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading services from Cloud...
@@ -106,7 +112,7 @@
         </div>
     </section>
 
-<!-- WHY CHOOSE US -->
+    <!-- WHY CHOOSE US -->
     <section class="py-14 sm:py-20 px-4 sm:px-6">
         <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 text-center">
             <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/40 border border-slate-800 flex flex-col justify-center">
@@ -155,19 +161,19 @@
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- DYNAMIC SERVICE GALLERY MODAL -->
+    <!-- MULTI-MEDIA SHOWCASE MODAL -->
     <div id="serviceGalleryModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-8 relative">
             <button onclick="closeServiceGallery()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-white text-xl w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-800 flex items-center justify-center transition">✕</button>
             
-            <h3 id="galleryModalTitle" class="text-xl sm:text-2xl font-bold text-white mb-1.5 pr-10">Service Gallery</h3>
-            <p id="galleryModalDesc" class="text-slate-400 text-xs sm:text-sm mb-6">Here are some of our previous projects and samples.</p>
+            <h3 id="galleryModalTitle" class="text-xl sm:text-2xl font-bold text-white mb-1.5 pr-10">Service Samples</h3>
+            <p id="galleryModalDesc" class="text-slate-400 text-xs sm:text-sm mb-6">Explore our previous project samples, papers and video works.</p>
 
-            <div id="galleryModalContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4"></div>
+            <div id="galleryModalContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4"></div>
         </div>
     </div>
 
-    <!-- FULLSCREEN IMAGE LIGHTBOX / VIEWER -->
+    <!-- FULLSCREEN IMAGE LIGHTBOX -->
     <div id="imagePreviewModal" class="hidden fixed inset-0 z-[70] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-8 select-none">
         <button onclick="closePreview()" class="absolute top-4 right-4 text-slate-300 hover:text-white text-2xl w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center transition hover:scale-110 z-20">
             <i class="fa-solid fa-xmark"></i>
@@ -190,7 +196,17 @@
         </div>
     </div>
 
-    <!-- SCRIPT (FIRESTORE REALTIME SYNC) -->
+    <!-- VIDEO PLAYER MODAL -->
+    <div id="videoPlayerModal" class="hidden fixed inset-0 z-[80] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+        <button onclick="closeVideoPlayer()" class="absolute top-4 right-4 text-slate-300 hover:text-white text-2xl w-10 h-10 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center transition z-20">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="w-full max-w-3xl aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+            <iframe id="videoIframe" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -200,7 +216,34 @@
             icon.classList.toggle('fa-xmark');
         }
 
-        // Initialize Firebase
+        // Typewriter Logic
+        const fullSentence = "High-converting Social Media Designs, Publication-Grade Typesetting for Educational Papers & AI-Powered Video Advertisements.";
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingElement = document.getElementById("animatedFullSentence");
+
+        function typeFullSentence() {
+            if (!typingElement) return;
+            if (isDeleting) {
+                typingElement.innerText = fullSentence.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.innerText = fullSentence.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            let typeSpeed = isDeleting ? 18 : 35;
+            if (!isDeleting && charIndex === fullSentence.length) {
+                typeSpeed = 3500;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                typeSpeed = 800;
+            }
+            setTimeout(typeFullSentence, typeSpeed);
+        }
+        document.addEventListener("DOMContentLoaded", typeFullSentence);
+
+        // Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDmErsuDnnLI1RZau_BN60BPk_r_3oz5b8",
             authDomain: "pg-creation.firebaseapp.com",
@@ -210,7 +253,6 @@
             appId: "1:12899358109:web:3060461eb1b1f6976c8b74",
             measurementId: "G-2SE99S1RQF"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -226,16 +268,12 @@
         };
 
         let cachedServices = [];
-        let activeGalleryList = [];
+        let activeImageGalleryList = [];
         let currentPreviewIndex = 0;
 
-        // REAL-TIME FIRESTORE LISTENER
         db.collection("services").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             cachedServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderWebsiteServices(cachedServices);
-        }, error => {
-            console.error("Firestore Error:", error);
-            document.getElementById('servicesContainer').innerHTML = `<div class="col-span-full text-center text-slate-500 py-10 text-xs">Waiting for Cloud services...</div>`;
         });
 
         function renderWebsiteServices(services) {
@@ -243,7 +281,7 @@
             if (!container) return;
 
             if (services.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center text-slate-500 py-12 text-sm">No services published yet. Please add them from the Admin Panel.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center text-slate-500 py-12 text-sm">No services published yet.</div>`;
                 return;
             }
 
@@ -254,7 +292,6 @@
                 return `
                 <div onclick="openServiceGallery('${s.id}')" class="bg-slate-950/80 border border-slate-800 p-5 sm:p-6 rounded-2xl sm:rounded-3xl ${theme.border} transition group hover:-translate-y-1 duration-300 cursor-pointer relative flex flex-col justify-between overflow-hidden">
                     <div>
-                        <!-- LARGE BANNER COVER -->
                         <div class="w-full h-40 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-5 bg-slate-900 border border-slate-800 flex items-center justify-center relative group-hover:border-slate-700 transition">
                             ${s.image 
                                 ? `<img src="${s.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">` 
@@ -262,7 +299,7 @@
                             }
                             ${photoCount > 0 ? `
                                 <span class="absolute top-2.5 right-2.5 text-[10px] sm:text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-700 text-slate-200">
-                                    <i class="fa-solid fa-images mr-1 text-cyan-400"></i>${photoCount} Samples
+                                    <i class="fa-solid fa-layer-group mr-1 text-cyan-400"></i>${photoCount} Items
                                 </span>
                             ` : ''}
                         </div>
@@ -293,28 +330,70 @@
             const service = cachedServices.find(s => s.id === serviceId);
             if (!service) return;
 
-            document.getElementById('galleryModalTitle').innerText = `${service.title} Samples`;
+            document.getElementById('galleryModalTitle').innerText = `${service.title} Showcase`;
             document.getElementById('galleryModalDesc').innerText = service.desc;
 
-            activeGalleryList = service.gallery || [];
+            const allItems = service.gallery || [];
+            activeImageGalleryList = allItems.filter(item => (!item.type || item.type === 'image'));
+
             const container = document.getElementById('galleryModalContainer');
 
-            if (activeGalleryList.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-xs sm:text-sm">No portfolio samples uploaded yet for this service.</div>`;
+            if (allItems.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-xs sm:text-sm">No samples or files uploaded yet for this service.</div>`;
             } else {
-                container.innerHTML = activeGalleryList.map((item, index) => `
-                    <div onclick="openLightbox(${index})" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 hover:border-cyan-500 transition group cursor-pointer">
-                        <div class="relative overflow-hidden h-36 sm:h-48 bg-slate-900 flex items-center justify-center">
-                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300">
-                            <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center text-xs sm:text-sm">
-                                    <i class="fa-solid fa-magnifying-glass-plus"></i>
-                                </span>
+                container.innerHTML = allItems.map((item) => {
+                    if (item.type === 'pdf') {
+                        return `
+                        <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 hover:border-rose-500/50 transition flex flex-col justify-between group">
+                            <div class="flex items-start gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl flex-shrink-0">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                                    <span class="text-[10px] text-slate-400">PDF Document</span>
+                                </div>
+                            </div>
+                            <a href="${item.url}" target="_blank" class="w-full py-2 bg-slate-900 hover:bg-rose-500 hover:text-white text-rose-400 border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open / Download PDF
+                            </a>
+                        </div>
+                        `;
+                    } else if (item.type === 'video') {
+                        return `
+                        <div onclick="playVideo('${encodeURIComponent(item.url)}')" class="bg-slate-950 rounded-xl p-4 border border-slate-800 hover:border-purple-500/50 transition flex flex-col justify-between group cursor-pointer">
+                            <div class="flex items-start gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-circle-play"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                                    <span class="text-[10px] text-purple-400">Watch Video Ad</span>
+                                </div>
+                            </div>
+                            <div class="w-full py-2 bg-slate-900 group-hover:bg-purple-600 text-purple-300 group-hover:text-white border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                                <i class="fa-solid fa-play text-[10px]"></i> Play Video
                             </div>
                         </div>
-                        <p class="p-2.5 text-[11px] sm:text-xs text-slate-300 font-medium truncate">${item.title || 'Sample Work'}</p>
-                    </div>
-                `).join('');
+                        `;
+                    } else {
+                        // Image
+                        const imgIdx = activeImageGalleryList.findIndex(x => x.id === item.id);
+                        return `
+                        <div onclick="openLightbox(${imgIdx})" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 hover:border-cyan-500 transition group cursor-pointer">
+                            <div class="relative overflow-hidden h-36 sm:h-44 bg-slate-900 flex items-center justify-center">
+                                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300">
+                                <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                    <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center text-xs sm:text-sm">
+                                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="p-2.5 text-[11px] sm:text-xs text-slate-300 font-medium truncate">${item.title || 'Sample Work'}</p>
+                        </div>
+                        `;
+                    }
+                }).join('');
             }
 
             document.getElementById('serviceGalleryModal').classList.remove('hidden');
@@ -324,34 +403,33 @@
             document.getElementById('serviceGalleryModal').classList.add('hidden');
         }
 
+        // Lightbox
         function openLightbox(index) {
-            if (!activeGalleryList || activeGalleryList.length === 0) return;
+            if (!activeImageGalleryList || activeImageGalleryList.length === 0) return;
             currentPreviewIndex = index;
             updateLightboxContent();
             document.getElementById('imagePreviewModal').classList.remove('hidden');
         }
 
         function updateLightboxContent() {
-            const item = activeGalleryList[currentPreviewIndex];
+            const item = activeImageGalleryList[currentPreviewIndex];
             if (!item) return;
-
             document.getElementById('previewImg').src = item.image;
             document.getElementById('previewCaption').innerText = item.title || 'Sample Work';
-            document.getElementById('previewCounter').innerText = `${currentPreviewIndex + 1} / ${activeGalleryList.length}`;
-
-            document.getElementById('prevImgBtn').style.display = activeGalleryList.length > 1 ? 'flex' : 'none';
-            document.getElementById('nextImgBtn').style.display = activeGalleryList.length > 1 ? 'flex' : 'none';
+            document.getElementById('previewCounter').innerText = `${currentPreviewIndex + 1} / ${activeImageGalleryList.length}`;
+            document.getElementById('prevImgBtn').style.display = activeImageGalleryList.length > 1 ? 'flex' : 'none';
+            document.getElementById('nextImgBtn').style.display = activeImageGalleryList.length > 1 ? 'flex' : 'none';
         }
 
         function nextImage() {
-            if (activeGalleryList.length <= 1) return;
-            currentPreviewIndex = (currentPreviewIndex + 1) % activeGalleryList.length;
+            if (activeImageGalleryList.length <= 1) return;
+            currentPreviewIndex = (currentPreviewIndex + 1) % activeImageGalleryList.length;
             updateLightboxContent();
         }
 
         function prevImage() {
-            if (activeGalleryList.length <= 1) return;
-            currentPreviewIndex = (currentPreviewIndex - 1 + activeGalleryList.length) % activeGalleryList.length;
+            if (activeImageGalleryList.length <= 1) return;
+            currentPreviewIndex = (currentPreviewIndex - 1 + activeImageGalleryList.length) % activeImageGalleryList.length;
             updateLightboxContent();
         }
 
@@ -359,46 +437,42 @@
             document.getElementById('imagePreviewModal').classList.add('hidden');
         }
 
+        // Video Player Logic
+        function playVideo(encodedUrl) {
+            let url = decodeURIComponent(encodedUrl);
+            let embedUrl = url;
+
+            if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                let videoId = "";
+                if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
+                else if (url.includes("shorts/")) videoId = url.split("shorts/")[1].split("?")[0];
+                else if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            } else if (url.includes("drive.google.com/file/d/")) {
+                embedUrl = url.replace("/view", "/preview").split("?")[0];
+            }
+
+            document.getElementById('videoIframe').src = embedUrl;
+            document.getElementById('videoPlayerModal').classList.remove('hidden');
+        }
+
+        function closeVideoPlayer() {
+            document.getElementById('videoIframe').src = "";
+            document.getElementById('videoPlayerModal').classList.add('hidden');
+        }
+
         document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePreview();
+                closeVideoPlayer();
+                closeServiceGallery();
+            }
             const modal = document.getElementById('imagePreviewModal');
             if (modal && !modal.classList.contains('hidden')) {
-                if (e.key === 'Escape') closePreview();
                 if (e.key === 'ArrowRight') nextImage();
                 if (e.key === 'ArrowLeft') prevImage();
             }
         });
-        // Full Sentence Typewriter Logic
-    const fullSentence = "High-converting Social Media Designs, Publication-Grade Typesetting for Educational Papers & AI-Powered Video Advertisements.";
-    let charIndex = 0;
-    let isDeleting = false;
-    const typingElement = document.getElementById("animatedFullSentence");
-
-    function typeFullSentence() {
-        if (!typingElement) return;
-
-        if (isDeleting) {
-            typingElement.innerText = fullSentence.substring(0, charIndex - 1);
-            charIndex--;
-        } else {
-            typingElement.innerText = fullSentence.substring(0, charIndex + 1);
-            charIndex++;
-        }
-
-        // Typing speed: 35ms (smooth), Deleting speed: 18ms (fast)
-        let typeSpeed = isDeleting ? 18 : 35;
-
-        if (!isDeleting && charIndex === fullSentence.length) {
-            typeSpeed = 3500; // වාක්‍යය සම්පූර්ණ වුණාම කියවන්න තත්පර 3.5ක් නවතිනවා
-            isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            typeSpeed = 800; // ආයේ මුල ඉඳන් පටන් ගන්න කලින් පොඩි Pause එකක්
-        }
-
-        setTimeout(typeFullSentence, typeSpeed);
-    }
-
-    document.addEventListener("DOMContentLoaded", typeFullSentence);
     </script>
 </body>
 </html>
