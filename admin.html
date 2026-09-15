@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PG Creation - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Poppins', sans-serif; }</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 md:p-12">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 border-b border-slate-800 mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">PG Creation Admin Panel</h1>
+                <p class="text-slate-400 text-sm mt-1">Manage, Edit Services, Galleries & Pricing Packages</p>
+            </div>
+            <a href="index.html" target="_blank" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl text-sm border border-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> View Website
+            </a>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex gap-4 mb-8 border-b border-slate-800">
+            <button onclick="switchTab('servicesTab')" id="btnServicesTab" class="pb-3 text-sm font-semibold border-b-2 border-cyan-400 text-cyan-400 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group"></i> Services & Gallery
+            </button>
+            <button onclick="switchTab('pricingTab')" id="btnPricingTab" class="pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+                <i class="fa-solid fa-tags"></i> Pricing Packages
+            </button>
+        </div>
+
+        <!-- TAB 1: SERVICES MANAGEMENT -->
+        <div id="servicesTab" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Add / Edit Service Form -->
+            <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-2xl h-fit sticky top-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 id="serviceFormHeading" class="text-xl font-bold flex items-center gap-2 text-cyan-400">
+                        <i class="fa-solid fa-plus-circle"></i> Add New Service
+                    </h2>
+                    <button id="btnCancelServiceEdit" onclick="cancelServiceEdit()" class="hidden text-xs text-rose-400 hover:underline">Cancel Edit</button>
+                </div>
+                
+                <form id="serviceForm" onsubmit="handleServiceSubmit(event)" class="space-y-4 text-sm">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Service Title</label>
+                        <input type="text" id="title" required placeholder="e.g. Graphic Design" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Service Icon / Photo</label>
+                        <div class="flex items-center gap-3">
+                            <input type="file" id="iconFile" accept="image/*" onchange="previewUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500 file:text-slate-950 bg-slate-950 border border-slate-800 rounded-lg p-1.5 cursor-pointer">
+                            <div id="imagePreviewBox" class="hidden w-11 h-11 rounded-lg border border-slate-700 bg-slate-950 flex-shrink-0 flex items-center justify-center p-1">
+                                <img id="previewImg" class="w-full h-full object-contain">
+                            </div>
+                        </div>
+                        <span id="photoNote" class="text-[11px] text-slate-500 mt-1 block">Choose a PNG/JPG icon</span>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Color Theme</label>
+                        <select id="color" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-cyan-500 outline-none">
+                            <option value="cyan">Cyan</option>
+                            <option value="blue">Blue</option>
+                            <option value="purple">Purple</option>
+                            <option value="emerald">Emerald</option>
+                            <option value="rose">Rose</option>
+                            <option value="amber">Amber</option>
+                            <option value="indigo">Indigo</option>
+                            <option value="teal">Teal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Description</label>
+                        <textarea id="desc" rows="3" required placeholder="Short description..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-cyan-500 outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Features (Bullet Points)</label>
+                        <input type="text" id="feature1" placeholder="Feature 1" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 mb-2 text-white outline-none">
+                        <input type="text" id="feature2" placeholder="Feature 2" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 mb-2 text-white outline-none">
+                        <input type="text" id="feature3" placeholder="Feature 3" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white outline-none">
+                    </div>
+                    <button type="submit" id="btnServiceSubmit" class="w-full py-3 bg-cyan-500 hover:bg-cyan-400 font-semibold rounded-xl text-slate-950 transition">
+                        Add Service Card
+                    </button>
+                </form>
+            </div>
+
+            <!-- Services List -->
+            <div class="lg:col-span-2">
+                <h2 class="text-xl font-bold mb-5 flex items-center justify-between">
+                    <span>Active Services</span>
+                    <span id="serviceCount" class="text-xs bg-slate-800 text-cyan-400 px-3 py-1 rounded-full">0 Services</span>
+                </h2>
+                <div id="servicesList" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PRICING MANAGEMENT -->
+        <div id="pricingTab" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Add / Edit Pricing Form -->
+            <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-2xl h-fit sticky top-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 id="pricingFormHeading" class="text-xl font-bold flex items-center gap-2 text-emerald-400">
+                        <i class="fa-solid fa-plus-circle"></i> Add New Pricing
+                    </h2>
+                    <button id="btnCancelPricingEdit" onclick="cancelPricingEdit()" class="hidden text-xs text-rose-400 hover:underline">Cancel Edit</button>
+                </div>
+                
+                <form id="pricingForm" onsubmit="handlePricingSubmit(event)" class="space-y-4 text-sm">
+                    <div>
+                        <label class="block text-slate-300 mb-1">Package Name / Service</label>
+                        <input type="text" id="priceTitle" required placeholder="e.g. Exam Paper Formatting" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Price</label>
+                        <input type="text" id="priceValue" required placeholder="e.g. Rs. 2,500" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Billing Period / Subtext</label>
+                        <input type="text" id="pricePeriod" placeholder="e.g. per paper / starting price" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Short Description</label>
+                        <textarea id="priceDesc" rows="2" placeholder="Brief note about package..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 mb-1">Key Highlights / Features</label>
+                        <input type="text" id="pfeature1" placeholder="Point 1 (e.g. High Quality PDF)" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 mb-2 text-white outline-none">
+                        <input type="text" id="pfeature2" placeholder="Point 2 (e.g. Sinhala Unicode)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 mb-2 text-white outline-none">
+                        <input type="text" id="pfeature3" placeholder="Point 3 (e.g. 2 Revisions)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white outline-none">
+                    </div>
+                    <div class="flex items-center gap-2 pt-1">
+                        <input type="checkbox" id="pricePopular" class="w-4 h-4 rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0">
+                        <label for="pricePopular" class="text-xs text-slate-300">Highlight as "Most Popular"</label>
+                    </div>
+                    <button type="submit" id="btnPricingSubmit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 font-semibold rounded-xl text-slate-950 transition">
+                        Add Pricing Package
+                    </button>
+                </form>
+            </div>
+
+            <!-- Pricing List -->
+            <div class="lg:col-span-2">
+                <h2 class="text-xl font-bold mb-5 flex items-center justify-between">
+                    <span>Active Pricing Packages</span>
+                    <span id="pricingCount" class="text-xs bg-slate-800 text-emerald-400 px-3 py-1 rounded-full">0 Packages</span>
+                </h2>
+                <div id="pricingList" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: MANAGE GALLERY PHOTOS FOR A SERVICE -->
+    <div id="galleryModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative">
+            <button onclick="closeGalleryModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-xl w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center transition">✕</button>
+
+            <h3 id="modalServiceTitle" class="text-2xl font-bold text-white mb-1">Service Gallery</h3>
+            <p class="text-slate-400 text-xs mb-6">Add sample portfolio photos that appear when clients click this service card.</p>
+
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl mb-6">
+                <h4 class="text-sm font-semibold text-cyan-400 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload New Sample Photo
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3">
+                    <input type="file" id="galleryPhotoInput" accept="image/*" class="text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-cyan-500 file:text-slate-950 bg-slate-900 border border-slate-800 rounded-lg p-1.5">
+                    <input type="text" id="galleryPhotoCaption" placeholder="Photo Caption (e.g. Flyer Design)" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
+                </div>
+                <button onclick="addGalleryPhoto()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-lg text-sm transition">
+                    + Upload & Add Photo to Gallery
+                </button>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-semibold text-slate-300 mb-3">Existing Photos (<span id="modalPhotoCount">0</span>)</h4>
+                <div id="modalPhotoGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        let uploadedImageBase64 = "";
+        let currentActiveServiceId = null;
+        let editingServiceId = null;
+        let editingPricingId = null;
+
+        const colorStyles = {
+            cyan: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500" },
+            blue: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500" },
+            purple: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500" },
+            emerald: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500" },
+            rose: { text: "text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500" },
+            amber: { text: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500" },
+            indigo: { text: "text-indigo-400", bg: "bg-indigo-500/10", border: "border-indigo-500" },
+            teal: { text: "text-teal-400", bg: "bg-teal-500/10", border: "border-teal-500" }
+        };
+
+        function switchTab(tabId) {
+            document.getElementById('servicesTab').classList.add('hidden');
+            document.getElementById('pricingTab').classList.add('hidden');
+            document.getElementById(tabId).classList.remove('hidden');
+
+            const btnServices = document.getElementById('btnServicesTab');
+            const btnPricing = document.getElementById('btnPricingTab');
+
+            if(tabId === 'servicesTab') {
+                btnServices.className = "pb-3 text-sm font-semibold border-b-2 border-cyan-400 text-cyan-400 flex items-center gap-2";
+                btnPricing.className = "pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2";
+            } else {
+                btnPricing.className = "pb-3 text-sm font-semibold border-b-2 border-emerald-400 text-emerald-400 flex items-center gap-2";
+                btnServices.className = "pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2";
+            }
+        }
+
+        function previewUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImageBase64 = e.target.result;
+                    document.getElementById('previewImg').src = uploadedImageBase64;
+                    document.getElementById('imagePreviewBox').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        /* ---------------- SERVICES LOGIC ---------------- */
+        function getServices() {
+            const data = localStorage.getItem('pg_services');
+            return data ? JSON.parse(data) : [];
+        }
+        function saveServices(s) { localStorage.setItem('pg_services', JSON.stringify(s)); }
+
+        function renderAdminServices() {
+            const services = getServices();
+            const container = document.getElementById('servicesList');
+            document.getElementById('serviceCount').innerText = `${services.length} Services`;
+
+            if(services.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl">No services found.</div>`;
+                return;
+            }
+
+            container.innerHTML = services.map(s => {
+                const theme = colorStyles[s.color] || colorStyles.cyan;
+                const photoCount = s.gallery ? s.gallery.length : 0;
+                return `
+                <div class="bg-slate-900 border ${editingServiceId === s.id ? 'border-cyan-400 ring-2 ring-cyan-500/20' : 'border-slate-800'} p-5 rounded-xl flex flex-col sm:flex-row items-start justify-between gap-4 transition">
+                    <div class="flex items-start gap-4 flex-1">
+                        <div class="w-12 h-12 rounded-xl ${theme.bg} flex items-center justify-center p-2 flex-shrink-0">
+                            ${s.image ? `<img src="${s.image}" class="w-full h-full object-contain">` : `<i class="fa-solid fa-star ${theme.text} text-xl"></i>`}
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-white text-base">${s.title}</h3>
+                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded ${theme.bg} ${theme.text}">${s.color}</span>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-1 leading-relaxed">${s.desc}</p>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                ${s.features.filter(f => f).map(f => `<span class="text-[11px] bg-slate-950 px-2 py-1 rounded text-slate-300 border border-slate-800">• ${f}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex sm:flex-col items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 border-slate-800 pt-3 sm:pt-0">
+                        <button onclick="openGalleryManager(${s.id})" class="px-3 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-xs font-semibold flex items-center gap-2 transition w-full sm:w-auto justify-center">
+                            <i class="fa-solid fa-images"></i> Photos (${photoCount})
+                        </button>
+                        <div class="flex items-center gap-1">
+                            <button onclick="editService(${s.id})" class="text-cyan-400 hover:bg-cyan-500/10 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-800 flex items-center gap-1.5" title="Edit Service">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                            <button onclick="deleteService(${s.id})" class="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition" title="Delete Service">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Click Edit on Service
+        function editService(id) {
+            const services = getServices();
+            const service = services.find(s => s.id === id);
+            if (!service) return;
+
+            editingServiceId = id;
+            document.getElementById('title').value = service.title;
+            document.getElementById('color').value = service.color;
+            document.getElementById('desc').value = service.desc;
+            document.getElementById('feature1').value = service.features[0] || '';
+            document.getElementById('feature2').value = service.features[1] || '';
+            document.getElementById('feature3').value = service.features[2] || '';
+
+            // Set existing image
+            uploadedImageBase64 = service.image || "";
+            if (service.image) {
+                document.getElementById('previewImg').src = service.image;
+                document.getElementById('imagePreviewBox').classList.remove('hidden');
+                document.getElementById('photoNote').innerText = "Keep current image or choose a new one to replace";
+            }
+
+            // Update Form UI for editing
+            document.getElementById('serviceFormHeading').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Service`;
+            document.getElementById('btnServiceSubmit').innerText = "Update & Save Changes";
+            document.getElementById('btnCancelServiceEdit').classList.remove('hidden');
+
+            renderAdminServices();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelServiceEdit() {
+            editingServiceId = null;
+            uploadedImageBase64 = "";
+            document.getElementById('serviceForm').reset();
+            document.getElementById('imagePreviewBox').classList.add('hidden');
+            document.getElementById('photoNote').innerText = "Choose a PNG/JPG icon";
+            document.getElementById('serviceFormHeading').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Add New Service`;
+            document.getElementById('btnServiceSubmit').innerText = "Add Service Card";
+            document.getElementById('btnCancelServiceEdit').classList.add('hidden');
+            renderAdminServices();
+        }
+
+        function handleServiceSubmit(e) {
+            e.preventDefault();
+            const services = getServices();
+
+            if (editingServiceId) {
+                // Update Existing Service
+                const index = services.findIndex(s => s.id === editingServiceId);
+                if (index !== -1) {
+                    services[index].title = document.getElementById('title').value;
+                    services[index].color = document.getElementById('color').value;
+                    services[index].desc = document.getElementById('desc').value;
+                    services[index].features = [
+                        document.getElementById('feature1').value,
+                        document.getElementById('feature2').value,
+                        document.getElementById('feature3').value
+                    ];
+                    if (uploadedImageBase64) {
+                        services[index].image = uploadedImageBase64;
+                    }
+                    saveServices(services);
+                    alert("Service successfully updated!");
+                    cancelServiceEdit();
+                }
+            } else {
+                // Add New Service
+                if (!uploadedImageBase64) {
+                    alert("Please select an icon/image photo!");
+                    return;
+                }
+                const newService = {
+                    id: Date.now(),
+                    title: document.getElementById('title').value,
+                    image: uploadedImageBase64,
+                    color: document.getElementById('color').value,
+                    desc: document.getElementById('desc').value,
+                    features: [
+                        document.getElementById('feature1').value,
+                        document.getElementById('feature2').value,
+                        document.getElementById('feature3').value
+                    ],
+                    gallery: []
+                };
+                services.push(newService);
+                saveServices(services);
+                cancelServiceEdit();
+                alert("Service successfully added!");
+            }
+        }
+
+        function deleteService(id) {
+            if(confirm("Are you sure you want to delete this service?")) {
+                let services = getServices().filter(s => s.id !== id);
+                saveServices(services);
+                if (editingServiceId === id) cancelServiceEdit();
+                renderAdminServices();
+            }
+        }
+
+        /* ---------------- PRICING LOGIC ---------------- */
+        const defaultPricing = [
+            { id: 1, title: "Social Media Post", price: "Rs. 1,500", period: "per design", desc: "Promo designs for Facebook & Instagram", features: ["High Resolution PNG", "2 Revisions"], isPopular: false },
+            { id: 2, title: "Typesetting (Exam Paper)", price: "Rs. 2,500", period: "starting price", desc: "Science & Math papers with equations", features: ["LaTeX Equations", "Print-Ready PDF"], isPopular: true },
+            { id: 3, title: "AI Promo Video / Reel", price: "Rs. 3,500", period: "per 30-60s video", desc: "Vertical videos with voiceovers", features: ["9:16 Vertical Video", "Sinhala Voiceover"], isPopular: false }
+        ];
+
+        function getPricing() {
+            const data = localStorage.getItem('pg_pricing');
+            if(!data) {
+                localStorage.setItem('pg_pricing', JSON.stringify(defaultPricing));
+                return defaultPricing;
+            }
+            return JSON.parse(data);
+        }
+        function savePricing(p) { localStorage.setItem('pg_pricing', JSON.stringify(p)); }
+
+        function renderAdminPricing() {
+            const list = getPricing();
+            const container = document.getElementById('pricingList');
+            document.getElementById('pricingCount').innerText = `${list.length} Packages`;
+
+            if(list.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl">No packages found.</div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(p => `
+                <div class="bg-slate-900 border ${editingPricingId === p.id ? 'border-emerald-400 ring-2 ring-emerald-500/20' : (p.isPopular ? 'border-cyan-500/50' : 'border-slate-800')} p-5 rounded-xl flex items-start justify-between gap-4 transition">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-white text-base">${p.title}</h3>
+                            ${p.isPopular ? `<span class="text-[10px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-full font-semibold">Popular</span>` : ''}
+                        </div>
+                        <div class="text-emerald-400 font-extrabold text-lg mt-1">${p.price} <span class="text-xs text-slate-400 font-normal">${p.period || ''}</span></div>
+                        <p class="text-slate-400 text-xs mt-1">${p.desc}</p>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            ${p.features.filter(f=>f).map(f => `<span class="text-[11px] bg-slate-950 px-2 py-0.5 rounded text-slate-300 border border-slate-800">• ${f}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="editPricing(${p.id})" class="text-emerald-400 hover:bg-emerald-500/10 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-800 flex items-center gap-1.5" title="Edit Pricing">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                        <button onclick="deletePricing(${p.id})" class="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition" title="Delete">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Click Edit on Pricing
+        function editPricing(id) {
+            const list = getPricing();
+            const item = list.find(p => p.id === id);
+            if (!item) return;
+
+            editingPricingId = id;
+            document.getElementById('priceTitle').value = item.title;
+            document.getElementById('priceValue').value = item.price;
+            document.getElementById('pricePeriod').value = item.period || '';
+            document.getElementById('priceDesc').value = item.desc || '';
+            document.getElementById('pfeature1').value = item.features[0] || '';
+            document.getElementById('pfeature2').value = item.features[1] || '';
+            document.getElementById('pfeature3').value = item.features[2] || '';
+            document.getElementById('pricePopular').checked = !!item.isPopular;
+
+            document.getElementById('pricingFormHeading').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Package`;
+            document.getElementById('btnPricingSubmit').innerText = "Update & Save Package";
+            document.getElementById('btnCancelPricingEdit').classList.remove('hidden');
+
+            renderAdminPricing();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelPricingEdit() {
+            editingPricingId = null;
+            document.getElementById('pricingForm').reset();
+            document.getElementById('pricingFormHeading').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Add New Pricing`;
+            document.getElementById('btnPricingSubmit').innerText = "Add Pricing Package";
+            document.getElementById('btnCancelPricingEdit').classList.add('hidden');
+            renderAdminPricing();
+        }
+
+        function handlePricingSubmit(e) {
+            e.preventDefault();
+            const list = getPricing();
+
+            if (editingPricingId) {
+                const index = list.findIndex(p => p.id === editingPricingId);
+                if (index !== -1) {
+                    list[index].title = document.getElementById('priceTitle').value;
+                    list[index].price = document.getElementById('priceValue').value;
+                    list[index].period = document.getElementById('pricePeriod').value;
+                    list[index].desc = document.getElementById('priceDesc').value;
+                    list[index].features = [
+                        document.getElementById('pfeature1').value,
+                        document.getElementById('pfeature2').value,
+                        document.getElementById('pfeature3').value
+                    ];
+                    list[index].isPopular = document.getElementById('pricePopular').checked;
+
+                    savePricing(list);
+                    alert("Pricing package successfully updated!");
+                    cancelPricingEdit();
+                }
+            } else {
+                list.push({
+                    id: Date.now(),
+                    title: document.getElementById('priceTitle').value,
+                    price: document.getElementById('priceValue').value,
+                    period: document.getElementById('pricePeriod').value,
+                    desc: document.getElementById('priceDesc').value,
+                    features: [
+                        document.getElementById('pfeature1').value,
+                        document.getElementById('pfeature2').value,
+                        document.getElementById('pfeature3').value
+                    ],
+                    isPopular: document.getElementById('pricePopular').checked
+                });
+                savePricing(list);
+                cancelPricingEdit();
+                alert("Pricing package successfully added!");
+            }
+        }
+
+        function deletePricing(id) {
+            if(confirm("Delete this pricing package?")) {
+                let list = getPricing().filter(p => p.id !== id);
+                savePricing(list);
+                if (editingPricingId === id) cancelPricingEdit();
+                renderAdminPricing();
+            }
+        }
+
+        /* ---------------- GALLERY MANAGER ---------------- */
+        function openGalleryManager(serviceId) {
+            currentActiveServiceId = serviceId;
+            const services = getServices();
+            const service = services.find(s => s.id === serviceId);
+            if (!service) return;
+
+            document.getElementById('modalServiceTitle').innerText = `${service.title} - Gallery`;
+            renderGalleryGrid(service);
+            document.getElementById('galleryModal').classList.remove('hidden');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').classList.add('hidden');
+            currentActiveServiceId = null;
+            renderAdminServices();
+        }
+
+        function renderGalleryGrid(service) {
+            const gallery = service.gallery || [];
+            const grid = document.getElementById('modalPhotoGrid');
+            document.getElementById('modalPhotoCount').innerText = gallery.length;
+
+            if (gallery.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs">No sample photos uploaded yet.</div>`;
+                return;
+            }
+
+            grid.innerHTML = gallery.map(item => `
+                <div class="relative bg-slate-950 border border-slate-800 rounded-xl overflow-hidden group">
+                    <img src="${item.image}" class="w-full h-32 object-cover">
+                    <div class="p-2 bg-slate-950">
+                        <p class="text-[11px] font-medium text-slate-300 truncate">${item.title || 'Untitled'}</p>
+                    </div>
+                    <button onclick="deleteGalleryPhoto(${item.id})" class="absolute top-2 right-2 bg-rose-600/90 text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs opacity-90 hover:opacity-100 transition" title="Delete Photo">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function addGalleryPhoto() {
+            const fileInput = document.getElementById('galleryPhotoInput');
+            const captionInput = document.getElementById('galleryPhotoCaption');
+
+            if (!fileInput.files || !fileInput.files[0]) {
+                alert("Please choose a photo to upload!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photoData = e.target.result;
+                const services = getServices();
+                const service = services.find(s => s.id === currentActiveServiceId);
+                
+                if (!service) return;
+                if (!service.gallery) service.gallery = [];
+
+                service.gallery.push({
+                    id: Date.now(),
+                    image: photoData,
+                    title: captionInput.value.trim() || "Sample Design"
+                });
+
+                saveServices(services);
+                fileInput.value = "";
+                captionInput.value = "";
+                renderGalleryGrid(service);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        function deleteGalleryPhoto(photoId) {
+            const services = getServices();
+            const service = services.find(s => s.id === currentActiveServiceId);
+            if (!service) return;
+
+            service.gallery = (service.gallery || []).filter(p => p.id !== photoId);
+            saveServices(services);
+            renderGalleryGrid(service);
+        }
+
+        // Initial Calls
+        renderAdminServices();
+        renderAdminPricing();
+    </script>
+</body>
+</html>
