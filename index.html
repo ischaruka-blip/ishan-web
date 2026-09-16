@@ -17,6 +17,22 @@
 
     <style>
         body { font-family: 'Poppins', sans-serif; }
+
+        /* Smooth continuous scroll to the right animation */
+        @keyframes scrollRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: scrollRight 40s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-white">
@@ -31,7 +47,7 @@
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-               <a href="about.html" class="hover:text-cyan-400 transition">About</a>
+                <a href="about.html" class="hover:text-cyan-400 transition">About</a>
                 <a href="index.html#services" class="hover:text-cyan-400 transition">Services</a>
                 <a href="pricing.html" class="hover:text-cyan-400 transition">Pricing</a>
                 <a href="index.html#contact" class="hover:text-cyan-400 transition">Contact</a>
@@ -54,7 +70,8 @@
         <div id="mobileMenu" class="hidden md:hidden bg-slate-950/95 border-b border-slate-800 px-6 py-5 space-y-4 text-sm font-medium">
             <a href="about.html" class="hover:text-cyan-400 transition">About</a>
             <a href="index.html#services" onclick="toggleMobileMenu()" class="block py-1 hover:text-cyan-400 transition">Services</a>
-            <a href="pricing.html" class="block py-1 text-cyan-400 font-semibold transition">Pricing</a>
+            <a href="pricing.html" class="block py-1 hover:text-cyan-400 transition">Pricing</a>
+            <a href="index.html#feedbacks" onclick="toggleMobileMenu()" class="block py-1 hover:text-cyan-400 transition">Reviews</a>
             <a href="index.html#contact" onclick="toggleMobileMenu()" class="block py-1 hover:text-cyan-400 transition">Contact</a>
             <div class="pt-3 border-t border-slate-800">
                 <a href="https://wa.me/94787187188" target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-medium text-sm transition">
@@ -133,6 +150,35 @@
         </div>
     </section>
 
+    <!-- AUTO-SWIPING CUSTOMER FEEDBACK SECTION (SWIPING RIGHT) -->
+    <section id="feedbacks" class="py-16 sm:py-24 bg-slate-900/40 border-t border-slate-800/80 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-10 sm:mb-14 text-center">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-3">
+                <i class="fa-solid fa-star text-amber-400"></i> Client Satisfaction & Proof
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-bold tracking-tight mb-2">What Our Clients Say</h2>
+            <p class="text-slate-400 text-xs sm:text-sm max-w-xl mx-auto">
+                Real feedback and WhatsApp reviews from teachers, tuition institutes, and business owners. (Click on any review to enlarge).
+            </p>
+        </div>
+
+        <!-- Marquee / Swipe Track (Moving Right) -->
+        <div class="relative w-full overflow-hidden select-none">
+            <!-- Left Gradient Shadow -->
+            <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none"></div>
+            <!-- Right Gradient Shadow -->
+            <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none"></div>
+
+            <div id="feedbackMarqueeWrapper" class="overflow-hidden">
+                <div id="feedbackTrack" class="marquee-track flex gap-4 sm:gap-6 items-center">
+                    <div class="text-slate-500 text-xs sm:text-sm py-8 px-4">
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading feedbacks...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CALL TO ACTION BANNER -->
     <section id="contact" class="py-16 sm:py-20 px-4 sm:px-6">
         <div class="max-w-5xl mx-auto bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-14 text-center relative overflow-hidden shadow-2xl">
@@ -160,7 +206,7 @@
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- MULTI-MEDIA SHOWCASE MODAL (WITH VISUAL PREVIEWS) -->
+    <!-- MULTI-MEDIA SHOWCASE MODAL -->
     <div id="serviceGalleryModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-8 relative">
             <button onclick="closeServiceGallery()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-white text-xl w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-800 flex items-center justify-center transition">✕</button>
@@ -195,12 +241,11 @@
         </div>
     </div>
 
-    <!-- RESPONSIVE VIDEO PLAYER MODAL (SUPPORTS BOTH VERTICAL REELS & HORIZONTAL VIDEOS) -->
+    <!-- RESPONSIVE VIDEO PLAYER MODAL -->
     <div id="videoPlayerModal" class="hidden fixed inset-0 z-[80] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6">
         <button onclick="closeVideoPlayer()" class="absolute top-4 right-4 text-white hover:text-cyan-400 text-2xl w-11 h-11 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center transition z-30">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <!-- Dynamic Aspect Container (Fits vertical 9:16 reels completely without cutting off!) -->
         <div class="relative w-full max-w-sm md:max-w-md h-[78vh] sm:h-[82vh] bg-black rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center">
             <iframe id="videoIframe" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
         </div>
@@ -268,6 +313,7 @@
         };
 
         let cachedServices = [];
+        let cachedFeedbacks = [];
         let activeImageGalleryList = [];
         let currentPreviewIndex = 0;
 
@@ -283,6 +329,7 @@
             return match ? match[1] : null;
         }
 
+        // LOAD SERVICES
         db.collection("services").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             cachedServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderWebsiteServices(cachedServices);
@@ -338,6 +385,65 @@
             }).join('');
         }
 
+        // LOAD FEEDBACKS (AUTO SWIPE RIGHT)
+        db.collection("feedbacks").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+            cachedFeedbacks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderFeedbacks(cachedFeedbacks);
+        });
+
+        function renderFeedbacks(feedbacks) {
+            const track = document.getElementById('feedbackTrack');
+            if (!track) return;
+
+            if (feedbacks.length === 0) {
+                track.innerHTML = `<div class="text-slate-500 text-xs sm:text-sm py-8 px-4 text-center w-full">Customer reviews will appear here soon.</div>`;
+                return;
+            }
+
+            // Duplicate array items so infinite marquee scrolls seamlessly without empty gap
+            const displayList = feedbacks.length < 5 ? [...feedbacks, ...feedbacks, ...feedbacks, ...feedbacks] : [...feedbacks, ...feedbacks];
+
+            track.innerHTML = displayList.map((fb, idx) => `
+                <div onclick="openFeedbackPreview(${idx % feedbacks.length})" class="w-64 sm:w-72 bg-slate-950 border border-slate-800 hover:border-amber-400/80 rounded-2xl p-3 sm:p-4 flex-shrink-0 cursor-pointer transition transform hover:-translate-y-1 duration-300 shadow-lg group">
+                    <div class="relative h-60 sm:h-72 w-full bg-slate-900 rounded-xl overflow-hidden border border-slate-800/80 mb-3 flex items-center justify-center">
+                        <img src="${fb.image}" alt="${fb.clientName || 'Feedback'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="w-9 h-9 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-xs shadow-lg">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="min-w-0 pr-2">
+                            <p class="text-xs font-semibold text-white truncate">${fb.clientName || 'Client Feedback'}</p>
+                            <span class="text-[10px] text-amber-400 flex items-center gap-1 mt-0.5">
+                                <i class="fa-solid fa-circle-check"></i> Verified Client
+                            </span>
+                        </div>
+                        <div class="text-amber-400 text-xs flex gap-0.5">
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openFeedbackPreview(index) {
+            activeImageGalleryList = cachedFeedbacks.map(f => ({
+                id: f.id,
+                image: f.image,
+                title: f.clientName || 'Customer Feedback'
+            }));
+            currentPreviewIndex = index;
+            updateLightboxContent();
+            document.getElementById('imagePreviewModal').classList.remove('hidden');
+        }
+
+        // GALLERY MODAL & LIGHTBOX LOGIC
         function openServiceGallery(serviceId) {
             const service = cachedServices.find(s => s.id === serviceId);
             if (!service) return;
@@ -388,7 +494,6 @@
                         const driveId = getDriveId(item.url);
                         const driveThumb = driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w800` : '';
 
-                        // Use user uploaded thumbnail -> or YouTube -> or Drive -> or fallback
                         const videoThumb = item.image || ytThumb || driveThumb;
 
                         return `
@@ -401,7 +506,6 @@
                                         <i class="fa-solid fa-video text-3xl text-purple-400"></i>
                                     </div>
                                 `}
-                                <!-- Glowing Play Button -->
                                 <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition flex items-center justify-center">
                                     <span class="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center text-lg shadow-xl shadow-purple-600/50 group-hover:scale-110 transition">
                                         <i class="fa-solid fa-play ml-1"></i>
@@ -421,7 +525,6 @@
                         </div>
                         `;
                     } else {
-                        // Image
                         const imgIdx = activeImageGalleryList.findIndex(x => x.id === item.id);
                         return `
                         <div onclick="openLightbox(${imgIdx})" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 hover:border-cyan-500 transition group cursor-pointer flex flex-col justify-between">
@@ -485,7 +588,6 @@
             document.getElementById('imagePreviewModal').classList.add('hidden');
         }
 
-        // FULLSCREEN-FIT VIDEO PLAYER LOGIC
         function playVideo(encodedUrl) {
             let url = decodeURIComponent(encodedUrl);
             let embedUrl = url;
