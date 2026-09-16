@@ -11,28 +11,15 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Swiper CSS (For Touch Swiping & Auto-Slider) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
         body { font-family: 'Poppins', sans-serif; }
-
-        /* Smooth continuous scroll to the right animation */
-        @keyframes scrollRight {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0%); }
-        }
-
-        .marquee-track {
-            display: flex;
-            width: max-content;
-            animation: scrollRight 40s linear infinite;
-        }
-
-        .marquee-track:hover {
-            animation-play-state: paused;
-        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-white">
@@ -50,6 +37,7 @@
                 <a href="about.html" class="hover:text-cyan-400 transition">About</a>
                 <a href="index.html#services" class="hover:text-cyan-400 transition">Services</a>
                 <a href="pricing.html" class="hover:text-cyan-400 transition">Pricing</a>
+                <a href="index.html#feedbacks" class="hover:text-cyan-400 transition">Reviews</a>
                 <a href="index.html#contact" class="hover:text-cyan-400 transition">Contact</a>
             </div>
 
@@ -150,31 +138,37 @@
         </div>
     </section>
 
-    <!-- AUTO-SWIPING CUSTOMER FEEDBACK SECTION (SWIPING RIGHT) -->
+    <!-- TOUCH-SWIPE & AUTO-SLIDING CUSTOMER FEEDBACK SECTION -->
     <section id="feedbacks" class="py-16 sm:py-24 bg-slate-900/40 border-t border-slate-800/80 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-10 sm:mb-14 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-8 sm:mb-12 text-center">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-3">
                 <i class="fa-solid fa-star text-amber-400"></i> Client Satisfaction & Proof
             </div>
             <h2 class="text-2xl sm:text-4xl font-bold tracking-tight mb-2">What Our Clients Say</h2>
             <p class="text-slate-400 text-xs sm:text-sm max-w-xl mx-auto">
-                Real feedback and WhatsApp reviews from teachers, tuition institutes, and business owners. (Click on any review to enlarge).
+                Real WhatsApp chats and reviews from our valued clients. Swipe manually or click to enlarge screenshots.
             </p>
         </div>
 
-        <!-- Marquee / Swipe Track (Moving Right) -->
-        <div class="relative w-full overflow-hidden select-none">
-            <!-- Left Gradient Shadow -->
-            <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none"></div>
-            <!-- Right Gradient Shadow -->
-            <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none"></div>
-
-            <div id="feedbackMarqueeWrapper" class="overflow-hidden">
-                <div id="feedbackTrack" class="marquee-track flex gap-4 sm:gap-6 items-center">
-                    <div class="text-slate-500 text-xs sm:text-sm py-8 px-4">
+        <!-- Swiper Container -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+            <div class="swiper feedbackSwiper w-full py-4">
+                <div id="feedbackTrack" class="swiper-wrapper items-center">
+                    <div class="text-slate-500 text-xs sm:text-sm py-12 text-center w-full">
                         <i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading feedbacks...
                     </div>
                 </div>
+            </div>
+
+            <!-- Manual Swipe / Nav Controls -->
+            <div class="flex items-center justify-center gap-3 mt-6">
+                <button class="feedback-prev-btn w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-amber-400/50 flex items-center justify-center transition shadow-lg">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </button>
+                <span class="text-xs text-slate-500 font-medium px-2">Swipe or Drag</span>
+                <button class="feedback-next-btn w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-amber-400/50 flex items-center justify-center transition shadow-lg">
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
             </div>
         </div>
     </section>
@@ -232,8 +226,8 @@
             <i class="fa-solid fa-chevron-right"></i>
         </button>
 
-        <div class="relative max-w-5xl max-h-[82vh] flex flex-col items-center justify-center w-full px-2">
-            <img id="previewImg" src="" class="max-w-full max-h-[68vh] sm:max-h-[75vh] object-contain rounded-xl sm:rounded-2xl shadow-2xl border border-slate-800 bg-slate-950">
+        <div class="relative max-w-5xl max-h-[85vh] flex flex-col items-center justify-center w-full px-2">
+            <img id="previewImg" src="" class="max-w-full max-h-[72vh] sm:max-h-[80vh] object-contain rounded-xl sm:rounded-2xl shadow-2xl border border-slate-800 bg-slate-950">
             <div class="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3">
                 <span id="previewCounter" class="text-[11px] sm:text-xs bg-slate-800 text-cyan-400 px-3 py-0.5 rounded-full border border-slate-700">1 / 4</span>
                 <p id="previewCaption" class="text-xs sm:text-sm font-medium text-slate-200 truncate max-w-[200px] sm:max-w-md"></p>
@@ -250,6 +244,9 @@
             <iframe id="videoIframe" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
         </div>
     </div>
+
+    <!-- Swiper JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- SCRIPT -->
     <script>
@@ -288,7 +285,7 @@
         }
         document.addEventListener("DOMContentLoaded", typeFullSentence);
 
-        // Firebase
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDmErsuDnnLI1RZau_BN60BPk_r_3oz5b8",
             authDomain: "pg-creation.firebaseapp.com",
@@ -316,6 +313,7 @@
         let cachedFeedbacks = [];
         let activeImageGalleryList = [];
         let currentPreviewIndex = 0;
+        let feedbackSwiper = null;
 
         function getYouTubeId(url) {
             if (!url) return null;
@@ -329,7 +327,7 @@
             return match ? match[1] : null;
         }
 
-        // LOAD SERVICES
+        // 1. SERVICES
         db.collection("services").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             cachedServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderWebsiteServices(cachedServices);
@@ -385,7 +383,7 @@
             }).join('');
         }
 
-        // LOAD FEEDBACKS (AUTO SWIPE RIGHT)
+        // 2. LOAD FEEDBACKS (TOUCH SWIPE + FULL IMAGE DISPLAY + FASTER SPEED)
         db.collection("feedbacks").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             cachedFeedbacks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderFeedbacks(cachedFeedbacks);
@@ -396,40 +394,68 @@
             if (!track) return;
 
             if (feedbacks.length === 0) {
-                track.innerHTML = `<div class="text-slate-500 text-xs sm:text-sm py-8 px-4 text-center w-full">Customer reviews will appear here soon.</div>`;
+                track.innerHTML = `<div class="text-slate-500 text-xs sm:text-sm py-12 text-center w-full">Customer reviews will appear here soon.</div>`;
                 return;
             }
 
-            // Duplicate array items so infinite marquee scrolls seamlessly without empty gap
-            const displayList = feedbacks.length < 5 ? [...feedbacks, ...feedbacks, ...feedbacks, ...feedbacks] : [...feedbacks, ...feedbacks];
+            // Render Slides (with object-contain to preserve FULL SCREENSHOT without any cropping!)
+            track.innerHTML = feedbacks.map((fb, idx) => `
+                <div class="swiper-slide !w-auto">
+                    <div class="w-[280px] sm:w-[320px] bg-slate-950 border border-slate-800 hover:border-amber-400/80 rounded-2xl p-3 sm:p-4 flex flex-col justify-between transition-all duration-300 shadow-xl group">
+                        
+                        <!-- Screenshot Box: object-contain fits 100% of the screenshot cleanly -->
+                        <div onclick="openFeedbackPreview(${idx})" class="relative h-80 sm:h-96 w-full bg-slate-900/90 rounded-xl overflow-hidden border border-slate-800/80 mb-3.5 flex items-center justify-center p-1.5 cursor-pointer">
+                            <img src="${fb.image}" alt="${fb.clientName || 'Feedback'}" class="max-w-full max-h-full object-contain rounded-lg group-hover:scale-105 transition duration-300">
+                            
+                            <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                <span class="w-10 h-10 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-sm shadow-xl">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                </span>
+                            </div>
+                        </div>
 
-            track.innerHTML = displayList.map((fb, idx) => `
-                <div onclick="openFeedbackPreview(${idx % feedbacks.length})" class="w-64 sm:w-72 bg-slate-950 border border-slate-800 hover:border-amber-400/80 rounded-2xl p-3 sm:p-4 flex-shrink-0 cursor-pointer transition transform hover:-translate-y-1 duration-300 shadow-lg group">
-                    <div class="relative h-60 sm:h-72 w-full bg-slate-900 rounded-xl overflow-hidden border border-slate-800/80 mb-3 flex items-center justify-center">
-                        <img src="${fb.image}" alt="${fb.clientName || 'Feedback'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <span class="w-9 h-9 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-xs shadow-lg">
-                                <i class="fa-solid fa-magnifying-glass-plus"></i>
-                            </span>
+                        <!-- Details -->
+                        <div class="flex items-center justify-between pt-1">
+                            <div class="min-w-0 pr-2">
+                                <p class="text-xs font-bold text-white truncate">${fb.clientName || 'Customer Feedback'}</p>
+                                <span class="text-[10px] text-amber-400 flex items-center gap-1 mt-0.5">
+                                    <i class="fa-solid fa-circle-check"></i> Verified Review
+                                </span>
+                            </div>
+                            <div class="text-amber-400 text-xs flex gap-0.5 flex-shrink-0">
+                                <i class="fa-solid fa-star text-[11px]"></i>
+                                <i class="fa-solid fa-star text-[11px]"></i>
+                                <i class="fa-solid fa-star text-[11px]"></i>
+                                <i class="fa-solid fa-star text-[11px]"></i>
+                                <i class="fa-solid fa-star text-[11px]"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="min-w-0 pr-2">
-                            <p class="text-xs font-semibold text-white truncate">${fb.clientName || 'Client Feedback'}</p>
-                            <span class="text-[10px] text-amber-400 flex items-center gap-1 mt-0.5">
-                                <i class="fa-solid fa-circle-check"></i> Verified Client
-                            </span>
-                        </div>
-                        <div class="text-amber-400 text-xs flex gap-0.5">
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                        </div>
+
                     </div>
                 </div>
             `).join('');
+
+            // Initialize or update Swiper
+            if (feedbackSwiper) {
+                feedbackSwiper.destroy(true, true);
+            }
+
+            feedbackSwiper = new Swiper('.feedbackSwiper', {
+                slidesPerView: 'auto',
+                spaceBetween: 20,
+                loop: feedbacks.length > 2,
+                grabCursor: true,
+                speed: 650,
+                autoplay: {
+                    delay: 2000, // Faster auto-swipe interval!
+                    disableOnInteraction: false,
+                    reverseDirection: true // Auto-swipes to the RIGHT!
+                },
+                navigation: {
+                    prevEl: '.feedback-prev-btn',
+                    nextEl: '.feedback-next-btn',
+                },
+            });
         }
 
         function openFeedbackPreview(index) {
@@ -443,7 +469,7 @@
             document.getElementById('imagePreviewModal').classList.remove('hidden');
         }
 
-        // GALLERY MODAL & LIGHTBOX LOGIC
+        // 3. GALLERY MODAL & LIGHTBOX LOGIC
         function openServiceGallery(serviceId) {
             const service = cachedServices.find(s => s.id === serviceId);
             if (!service) return;
