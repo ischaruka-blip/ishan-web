@@ -173,19 +173,81 @@
         </div>
     </section>
 
-    <!-- CALL TO ACTION BANNER -->
-    <section id="contact" class="py-16 sm:py-20 px-4 sm:px-6">
-        <div class="max-w-5xl mx-auto bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-14 text-center relative overflow-hidden shadow-2xl">
-            <div class="absolute -top-10 -right-10 w-48 h-48 bg-cyan-500/20 rounded-full blur-2xl"></div>
-            <h2 class="text-2xl sm:text-4xl font-bold mb-4">Ready to Elevate Your Brand?</h2>
-            <p class="text-slate-400 max-w-xl mx-auto mb-8 text-xs sm:text-base">
-                Whether you need urgent examination papers formatted, social media post campaigns, or a high-converting video ad, PG Creation is here to help.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="https://wa.me/94787187188?text=Hello%20PG%20Creation,%20I%20have%20a%20project%20for%20you." target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-8 py-3.5 sm:py-4 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm sm:text-base">
-                    <i class="fa-brands fa-whatsapp text-lg sm:text-xl"></i>
-                    <span>Chat on WhatsApp</span>
-                </a>
+    <!-- CONTACT & CONNECT SECTION (CALL, WHATSAPP, EMAIL, FACEBOOK) -->
+    <section id="contact" class="py-16 sm:py-24 px-4 sm:px-6">
+        <div class="max-w-5xl mx-auto bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-12 text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute -top-10 -right-10 w-52 h-52 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-52 h-52 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                    <i class="fa-solid fa-address-book text-xs"></i> Get In Touch
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">Ready to Start Your Project?</h2>
+                <p class="text-slate-400 max-w-xl mx-auto mb-10 text-xs sm:text-sm leading-relaxed">
+                    Have question papers to format, promotional flyers to design, or advertising campaigns to run? Contact us directly through any channel below.
+                </p>
+
+                <!-- 4 CONTACT CARDS GRID -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 max-w-4xl mx-auto mb-8 text-left">
+                    
+                    <!-- 1. Normal Phone Call -->
+                    <a href="tel:+94787187188" class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500 hover:bg-slate-900/80 transition-all duration-300 group flex flex-col justify-between shadow-lg">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-slate-400 block font-medium">Direct Call</span>
+                            <span class="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-400 transition">078 718 7188</span>
+                        </div>
+                    </a>
+
+                    <!-- 2. WhatsApp Chat -->
+                    <a href="https://wa.me/94787187188?text=Hello%20PG%20Creation,%20I%20have%20an%20inquiry." target="_blank" class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-emerald-500 hover:bg-slate-900/80 transition-all duration-300 group flex flex-col justify-between shadow-lg">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-slate-400 block font-medium">WhatsApp</span>
+                            <span class="text-xs sm:text-sm font-bold text-white group-hover:text-emerald-400 transition">078 718 7188</span>
+                        </div>
+                    </a>
+
+                    <!-- 3. Email -->
+                    <a href="mailto:pgcreationlk@gmail.com" class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-indigo-500 hover:bg-slate-900/80 transition-all duration-300 group flex flex-col justify-between shadow-lg truncate">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <span class="text-[11px] text-slate-400 block font-medium">Email Us</span>
+                            <span class="text-xs sm:text-sm font-bold text-white group-hover:text-indigo-400 transition truncate block">pgcreationlk@gmail.com</span>
+                        </div>
+                    </a>
+
+                    <!-- 4. Facebook Page -->
+                    <a href="https://web.facebook.com/pgcreationlk" target="_blank" class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-blue-500 hover:bg-slate-900/80 transition-all duration-300 group flex flex-col justify-between shadow-lg">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fa-brands fa-facebook"></i>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-slate-400 block font-medium">Facebook Page</span>
+                            <span class="text-xs sm:text-sm font-bold text-white group-hover:text-blue-400 transition">pgcreationlk</span>
+                        </div>
+                    </a>
+
+                </div>
+
+                <!-- Instant Action Button -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a href="https://wa.me/94787187188?text=Hello%20PG%20Creation,%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-8 py-3.5 rounded-xl transition shadow-xl shadow-emerald-500/25 text-sm">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Start Chat on WhatsApp</span>
+                    </a>
+                    <a href="tel:+94787187188" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-8 py-3.5 rounded-xl border border-slate-700 text-sm transition">
+                        <i class="fa-solid fa-phone text-xs text-cyan-400"></i>
+                        <span>Call 078 718 7188</span>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -398,7 +460,6 @@
                 return;
             }
 
-            // Compact height (h-48 sm:h-56) to eliminate empty black padding
             track.innerHTML = feedbacks.map((fb, idx) => `
                 <div class="swiper-slide !w-auto">
                     <div class="w-[270px] sm:w-[310px] bg-slate-950 border border-slate-800 hover:border-amber-400/80 rounded-2xl p-3 flex flex-col justify-between transition-all duration-300 shadow-xl group">
