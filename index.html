@@ -100,58 +100,18 @@
 
     <!-- SERVICES SECTION -->
     <section id="services" class="py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50 border-y border-slate-800/80">
-        <div class="text-center max-w-4xl mx-auto mb-12 sm:mb-16">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
                 <h2 class="text-2xl sm:text-4xl font-bold mb-3">Our Core Services</h2>
                 <p class="text-slate-400 text-xs sm:text-sm">Professional solutions tailored to help tuition institutes, teachers, and small businesses stand out.</p>
-          // ==========================================
-        // 1. SERVICES (INSTANT CACHE + CLOUD SYNC)
-        // ==========================================
-        // Check browser cache first for INSTANT 0ms loading
-        const localServices = localStorage.getItem("pg_cached_services");
-        if (localServices) {
-            try {
-                cachedServices = JSON.parse(localServices);
-                renderWebsiteServices(cachedServices);
-            } catch (e) {
-                console.error("Cache load error:", e);
-            }
-        }
-
-        // Sync with Firebase in background & update cache
-        db.collection("services").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-            cachedServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            try {
-                localStorage.setItem("pg_cached_services", JSON.stringify(cachedServices));
-            } catch (e) {
-                // Ignore storage quota if payload is too large
-            }
-            renderWebsiteServices(cachedServices);
-        });
-
-        // ==========================================
-        // 2. FEEDBACKS (INSTANT CACHE + CLOUD SYNC)
-        // ==========================================
-        // Check browser cache first for INSTANT 0ms loading
-        const localFeedbacks = localStorage.getItem("pg_cached_feedbacks");
-        if (localFeedbacks) {
-            try {
-                cachedFeedbacks = JSON.parse(localFeedbacks);
-                renderFeedbacks(cachedFeedbacks);
-            } catch (e) {
-                console.error("Feedback cache load error:", e);
-            }
-        }
-
-        // Sync with Firebase in background & update cache
-        db.collection("feedbacks").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-            cachedFeedbacks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            try {
-                localStorage.setItem("pg_cached_feedbacks", JSON.stringify(cachedFeedbacks));
-            } catch (e) {
-                // Ignore storage quota if payload is too large
-            }
-            renderFeedbacks(cachedFeedbacks);
-        });
+            </div>
+            
+            <div id="servicesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div class="col-span-full text-center py-10 text-slate-500 text-sm">
+                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading services from Cloud...
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- WHY CHOOSE US -->
