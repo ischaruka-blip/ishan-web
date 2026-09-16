@@ -139,8 +139,8 @@
     </section>
 
     <!-- TOUCH-SWIPE & AUTO-SLIDING CUSTOMER FEEDBACK SECTION -->
-    <section id="feedbacks" class="py-16 sm:py-24 bg-slate-900/40 border-t border-slate-800/80 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-8 sm:mb-12 text-center">
+    <section id="feedbacks" class="py-14 sm:py-20 bg-slate-900/40 border-t border-slate-800/80 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-8 text-center">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-3">
                 <i class="fa-solid fa-star text-amber-400"></i> Client Satisfaction & Proof
             </div>
@@ -152,22 +152,22 @@
 
         <!-- Swiper Container -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
-            <div class="swiper feedbackSwiper w-full py-4">
+            <div class="swiper feedbackSwiper w-full py-2">
                 <div id="feedbackTrack" class="swiper-wrapper items-center">
-                    <div class="text-slate-500 text-xs sm:text-sm py-12 text-center w-full">
+                    <div class="text-slate-500 text-xs sm:text-sm py-10 text-center w-full">
                         <i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading feedbacks...
                     </div>
                 </div>
             </div>
 
             <!-- Manual Swipe / Nav Controls -->
-            <div class="flex items-center justify-center gap-3 mt-6">
-                <button class="feedback-prev-btn w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-amber-400/50 flex items-center justify-center transition shadow-lg">
-                    <i class="fa-solid fa-arrow-left text-sm"></i>
+            <div class="flex items-center justify-center gap-3 mt-5">
+                <button class="feedback-prev-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-amber-400/50 flex items-center justify-center transition shadow-lg">
+                    <i class="fa-solid fa-arrow-left text-xs sm:text-sm"></i>
                 </button>
                 <span class="text-xs text-slate-500 font-medium px-2">Swipe or Drag</span>
-                <button class="feedback-next-btn w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-amber-400/50 flex items-center justify-center transition shadow-lg">
-                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                <button class="feedback-next-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-amber-400/50 flex items-center justify-center transition shadow-lg">
+                    <i class="fa-solid fa-arrow-right text-xs sm:text-sm"></i>
                 </button>
             </div>
         </div>
@@ -383,7 +383,7 @@
             }).join('');
         }
 
-        // 2. LOAD FEEDBACKS (TOUCH SWIPE + FULL IMAGE DISPLAY + FASTER SPEED)
+        // 2. LOAD FEEDBACKS (OPTIMIZED COMPACT HEIGHT & SMOOTH SWIPER)
         db.collection("feedbacks").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             cachedFeedbacks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderFeedbacks(cachedFeedbacks);
@@ -394,28 +394,28 @@
             if (!track) return;
 
             if (feedbacks.length === 0) {
-                track.innerHTML = `<div class="text-slate-500 text-xs sm:text-sm py-12 text-center w-full">Customer reviews will appear here soon.</div>`;
+                track.innerHTML = `<div class="text-slate-500 text-xs sm:text-sm py-10 text-center w-full">Customer reviews will appear here soon.</div>`;
                 return;
             }
 
-            // Render Slides (with object-contain to preserve FULL SCREENSHOT without any cropping!)
+            // Compact height (h-48 sm:h-56) to eliminate empty black padding
             track.innerHTML = feedbacks.map((fb, idx) => `
                 <div class="swiper-slide !w-auto">
-                    <div class="w-[280px] sm:w-[320px] bg-slate-950 border border-slate-800 hover:border-amber-400/80 rounded-2xl p-3 sm:p-4 flex flex-col justify-between transition-all duration-300 shadow-xl group">
+                    <div class="w-[270px] sm:w-[310px] bg-slate-950 border border-slate-800 hover:border-amber-400/80 rounded-2xl p-3 flex flex-col justify-between transition-all duration-300 shadow-xl group">
                         
-                        <!-- Screenshot Box: object-contain fits 100% of the screenshot cleanly -->
-                        <div onclick="openFeedbackPreview(${idx})" class="relative h-80 sm:h-96 w-full bg-slate-900/90 rounded-xl overflow-hidden border border-slate-800/80 mb-3.5 flex items-center justify-center p-1.5 cursor-pointer">
-                            <img src="${fb.image}" alt="${fb.clientName || 'Feedback'}" class="max-w-full max-h-full object-contain rounded-lg group-hover:scale-105 transition duration-300">
+                        <!-- Compact Screenshot Box -->
+                        <div onclick="openFeedbackPreview(${idx})" class="relative h-48 sm:h-56 w-full bg-slate-900/90 rounded-xl overflow-hidden border border-slate-800/70 mb-3 flex items-center justify-center p-2 cursor-pointer">
+                            <img src="${fb.image}" alt="${fb.clientName || 'Feedback'}" class="max-w-full max-h-full object-contain rounded group-hover:scale-105 transition duration-300">
                             
-                            <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                <span class="w-10 h-10 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-sm shadow-xl">
+                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                <span class="w-9 h-9 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-xs shadow-lg">
                                     <i class="fa-solid fa-magnifying-glass-plus"></i>
                                 </span>
                             </div>
                         </div>
 
                         <!-- Details -->
-                        <div class="flex items-center justify-between pt-1">
+                        <div class="flex items-center justify-between px-1">
                             <div class="min-w-0 pr-2">
                                 <p class="text-xs font-bold text-white truncate">${fb.clientName || 'Customer Feedback'}</p>
                                 <span class="text-[10px] text-amber-400 flex items-center gap-1 mt-0.5">
@@ -423,11 +423,11 @@
                                 </span>
                             </div>
                             <div class="text-amber-400 text-xs flex gap-0.5 flex-shrink-0">
-                                <i class="fa-solid fa-star text-[11px]"></i>
-                                <i class="fa-solid fa-star text-[11px]"></i>
-                                <i class="fa-solid fa-star text-[11px]"></i>
-                                <i class="fa-solid fa-star text-[11px]"></i>
-                                <i class="fa-solid fa-star text-[11px]"></i>
+                                <i class="fa-solid fa-star text-[10px]"></i>
+                                <i class="fa-solid fa-star text-[10px]"></i>
+                                <i class="fa-solid fa-star text-[10px]"></i>
+                                <i class="fa-solid fa-star text-[10px]"></i>
+                                <i class="fa-solid fa-star text-[10px]"></i>
                             </div>
                         </div>
 
@@ -442,14 +442,14 @@
 
             feedbackSwiper = new Swiper('.feedbackSwiper', {
                 slidesPerView: 'auto',
-                spaceBetween: 20,
+                spaceBetween: 18,
                 loop: feedbacks.length > 2,
                 grabCursor: true,
                 speed: 650,
                 autoplay: {
-                    delay: 2000, // Faster auto-swipe interval!
+                    delay: 2000,
                     disableOnInteraction: false,
-                    reverseDirection: true // Auto-swipes to the RIGHT!
+                    reverseDirection: true
                 },
                 navigation: {
                     prevEl: '.feedback-prev-btn',
