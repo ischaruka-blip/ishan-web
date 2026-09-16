@@ -55,7 +55,7 @@
                         <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">PG Creation Admin</h1>
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">● Multi-Media Cloud</span>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm mt-1">Manage Services, Photos, PDFs & Video Showcases</p>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">Manage Services, Pricing & Customer Feedbacks</p>
                 </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <a href="index.html" target="_blank" class="flex-1 sm:flex-none text-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl text-xs sm:text-sm border border-slate-700 flex items-center justify-center gap-1.5">
@@ -74,6 +74,9 @@
                 </button>
                 <button onclick="switchTab('pricingTab')" id="btnPricingTab" class="pb-3 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 flex-shrink-0">
                     <i class="fa-solid fa-tags"></i> Pricing Packages
+                </button>
+                <button onclick="switchTab('feedbackTab')" id="btnFeedbackTab" class="pb-3 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 flex-shrink-0">
+                    <i class="fa-solid fa-comments"></i> Customer Feedbacks
                 </button>
             </div>
 
@@ -191,6 +194,44 @@
                     <div id="pricingList" class="space-y-4"></div>
                 </div>
             </div>
+
+            <!-- TAB 3: CUSTOMER FEEDBACKS -->
+            <div id="feedbackTab" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div class="bg-slate-900/80 border border-slate-800 p-5 sm:p-6 rounded-2xl h-fit lg:sticky lg:top-6">
+                    <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2 text-amber-400 mb-4">
+                        <i class="fa-solid fa-comment-medical"></i> Add Feedback Screenshot
+                    </h2>
+                    
+                    <form id="feedbackForm" onsubmit="handleFeedbackSubmit(event)" class="space-y-4 text-xs sm:text-sm">
+                        <div>
+                            <label class="block text-slate-300 mb-1 font-medium">Client / Project Note (Optional)</label>
+                            <input type="text" id="fbClientName" placeholder="e.g. A/L Physics Teacher / WhatsApp Review" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-amber-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 mb-1 font-medium">Feedback Screenshot (WhatsApp/Chat)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="file" id="fbScreenshotInput" accept="image/*" required onchange="previewFeedbackUpload(event)" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-amber-500 file:text-slate-950 bg-slate-950 border border-slate-800 rounded-lg p-1.5 cursor-pointer">
+                                <div id="fbPreviewBox" class="hidden w-12 h-12 rounded-lg border border-slate-700 bg-slate-950 flex-shrink-0 flex items-center justify-center p-1">
+                                    <img id="fbPreviewImg" class="w-full h-full object-cover rounded">
+                                </div>
+                            </div>
+                            <span id="fbNote" class="text-[10px] sm:text-[11px] text-slate-500 mt-1 block">Upload clear screenshot of chat or positive review</span>
+                        </div>
+                        <button type="submit" id="btnFeedbackSubmit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 font-semibold rounded-xl text-slate-950 transition">
+                            + Publish Client Feedback
+                        </button>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <h2 class="text-lg sm:text-xl font-bold mb-4 flex items-center justify-between">
+                        <span>Active Client Feedbacks</span>
+                        <span id="feedbackCount" class="text-xs bg-slate-800 text-amber-400 px-3 py-1 rounded-full">Loading...</span>
+                    </h2>
+                    <div id="feedbacksList" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -234,16 +275,15 @@
                     <span class="text-[11px] text-slate-500 block">Paste your Google Drive link ("Anyone with link can view").</span>
                 </div>
 
-                <!-- 3. Video Input (NOW WITH THUMBNAIL PHOTO UPLOAD!) -->
+                <!-- 3. Video Input -->
                 <div id="mediaBoxVideo" class="hidden space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <input type="url" id="galleryVideoUrl" placeholder="Google Drive or YouTube Video URL" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
                         <input type="text" id="galleryVideoCaption" placeholder="Video Title (e.g. AI Presenter Video Ad)" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white outline-none">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-medium text-purple-300 mb-1">Upload Video Thumbnail / Preview Photo (Optional but Recommended!):</label>
+                        <label class="block text-[11px] font-medium text-purple-300 mb-1">Upload Video Thumbnail / Preview Photo:</label>
                         <input type="file" id="galleryVideoThumbInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-purple-600 file:text-white bg-slate-900 border border-slate-800 rounded-lg p-1.5">
-                        <span class="text-[10px] text-slate-500 mt-0.5 block">Upload a screenshot of the video so it shows a beautiful cover photo before playing!</span>
                     </div>
                 </div>
 
@@ -335,7 +375,9 @@
 
         let liveServices = [];
         let livePricing = [];
+        let liveFeedbacks = [];
         let uploadedImageBase64 = "";
+        let uploadedFeedbackBase64 = "";
         let currentActiveServiceId = null;
         let editingServiceId = null;
         let editingPricingId = null;
@@ -355,16 +397,23 @@
         function switchTab(tabId) {
             document.getElementById('servicesTab').classList.add('hidden');
             document.getElementById('pricingTab').classList.add('hidden');
+            document.getElementById('feedbackTab').classList.add('hidden');
             document.getElementById(tabId).classList.remove('hidden');
 
             const btnServices = document.getElementById('btnServicesTab');
             const btnPricing = document.getElementById('btnPricingTab');
-            if(tabId === 'servicesTab') {
+            const btnFeedback = document.getElementById('btnFeedbackTab');
+
+            btnServices.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 flex-shrink-0";
+            btnPricing.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 flex-shrink-0";
+            btnFeedback.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 flex-shrink-0";
+
+            if (tabId === 'servicesTab') {
                 btnServices.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-cyan-400 text-cyan-400 flex items-center gap-2 flex-shrink-0";
-                btnPricing.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 flex-shrink-0";
-            } else {
+            } else if (tabId === 'pricingTab') {
                 btnPricing.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-emerald-400 text-emerald-400 flex items-center gap-2 flex-shrink-0";
-                btnServices.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 flex-shrink-0";
+            } else if (tabId === 'feedbackTab') {
+                btnFeedback.className = "pb-3 text-xs sm:text-sm font-semibold border-b-2 border-amber-400 text-amber-400 flex items-center gap-2 flex-shrink-0";
             }
         }
 
@@ -376,6 +425,17 @@
                 document.getElementById('previewImg').src = uploadedImageBase64;
                 document.getElementById('imagePreviewBox').classList.remove('hidden');
                 document.getElementById('photoNote').innerText = "✓ Ready! Fast Cloud Size";
+            }
+        }
+
+        async function previewFeedbackUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fbNote').innerText = "Optimizing screenshot...";
+                uploadedFeedbackBase64 = await compressImageFile(file, 850, 0.70);
+                document.getElementById('fbPreviewImg').src = uploadedFeedbackBase64;
+                document.getElementById('fbPreviewBox').classList.remove('hidden');
+                document.getElementById('fbNote').innerText = "✓ Screenshot Ready";
             }
         }
 
@@ -622,6 +682,75 @@
             }
         }
 
+        // CUSTOMER FEEDBACKS
+        db.collection("feedbacks").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+            liveFeedbacks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderAdminFeedbacks();
+        });
+
+        function renderAdminFeedbacks() {
+            const container = document.getElementById('feedbacksList');
+            document.getElementById('feedbackCount').innerText = `${liveFeedbacks.length} Feedbacks`;
+
+            if (liveFeedbacks.length === 0) {
+                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs sm:text-sm">No client feedback screenshots added yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = liveFeedbacks.map(f => `
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-3 flex flex-col justify-between group">
+                    <div class="relative h-48 bg-slate-950 rounded-lg overflow-hidden border border-slate-800/80 mb-2.5 flex items-center justify-center">
+                        <img src="${f.image}" alt="Feedback" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="min-w-0 pr-2">
+                            <h4 class="text-xs font-semibold text-slate-200 truncate">${f.clientName || 'Customer Feedback'}</h4>
+                            <span class="text-[10px] text-slate-500">${new Date(f.createdAt || Date.now()).toLocaleDateString()}</span>
+                        </div>
+                        <button onclick="deleteFeedback('${f.id}')" class="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg transition" title="Delete">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function handleFeedbackSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnFeedbackSubmit');
+            if (!uploadedFeedbackBase64) {
+                alert("Please select a feedback screenshot image!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Uploading Feedback...";
+
+            try {
+                await db.collection("feedbacks").add({
+                    image: uploadedFeedbackBase64,
+                    clientName: document.getElementById('fbClientName').value.trim() || 'Client Review',
+                    createdAt: Date.now()
+                });
+                alert("Client feedback published live!");
+                document.getElementById('feedbackForm').reset();
+                document.getElementById('fbPreviewBox').classList.add('hidden');
+                document.getElementById('fbNote').innerText = "Upload clear screenshot of chat or positive review";
+                uploadedFeedbackBase64 = "";
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "+ Publish Client Feedback";
+            }
+        }
+
+        async function deleteFeedback(id) {
+            if (confirm("Delete this client feedback?")) {
+                await db.collection("feedbacks").doc(id).delete();
+            }
+        }
+
         /* MULTI-MEDIA GALLERY MANAGER */
         function setMediaType(type) {
             currentMediaType = type;
@@ -777,7 +906,7 @@
                         id: Date.now(),
                         type: 'video',
                         url: url,
-                        image: videoThumbnail, // User uploaded thumbnail!
+                        image: videoThumbnail,
                         title: caption
                     });
 
